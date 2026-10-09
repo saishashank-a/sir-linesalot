@@ -14,7 +14,9 @@ import {
 } from '@xyflow/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { addEdge, addNode, addPlate, moveNode, movePlate } from '../edit/canvasActions.ts'
+import { overviewPlate } from '../model/resolve.ts'
 import { useStore } from '../store.ts'
+import { flyToPlate, focusedPlate, registerCamera } from './camera.ts'
 import { docToFlow, pathColor, type LineFlowEdge, type PlateFlowNode, type SketchFlowEdge, type StepFlowNode } from './adapter.ts'
 import { typingIn } from '../typing.ts'
 import { useNarrow } from '../useNarrow.ts'
@@ -45,19 +47,36 @@ export function Canvas() {
   const playing = useStore((s) => s.mode === 'play')
   const playPathId = useStore((s) => (s.mode === 'play' ? s.play.pathId : null))
   const { openCard, toggleLine, edit } = useStore.getState()
-  const { getInternalNode } = useReactFlow()
+  const { getInternalNode, fitBounds } = useReactFlow()
   const touches = useTouchCount()
   const narrow = useNarrow()
   // Phones open on the overview plate: every plate side by side is too small to read there.
-  const startPlate = doc.plates?.find((p) => p.kind === 'overview') ?? doc.plates?.[0]
+  const startPlate = overviewPlate(doc)
+  // Outside Edit mode, plates other than the focused one dim slightly so the detail
+  // doesn't drown out the plate you're reading.
+  const focusPlateId = useStore((s) => s.focusPlateId)
+  const focusId = !editing && (doc.plates?.length ?? 0) > 1 ? focusedPlate(doc, focusPlateId)?.id : undefined
+
+  useEffect(() => {
+    registerCamera(fitBounds)
+    return () => registerCamera(null)
+  }, [fitBounds])
 
   const flow = useMemo(() => {
     const { nodes, edges } = docToFlow(doc, highlightLineId, playPathId)
+    const plateOf = new Map(doc.nodes.map((n) => [n.id, n.plate]))
+    const off = (plate: string | undefined) => (focusId && plate !== focusId ? 'off-focus' : undefined)
     return {
-      nodes: nodes.map((n): FlowNode => (n.type === 'plate' ? { ...n, dragHandle: '.sk-plate-title' } : n)),
-      edges: edges.map((e) => (e.type === 'line' ? { ...e, reconnectable: false } : e)),
+      nodes: nodes.map((n): FlowNode =>
+        n.type === 'plate' ? { ...n, dragHandle: '.sk-plate-title', className: off(n.id) } : { ...n, className: off(n.parentId) },
+      ),
+      edges: edges.map((e) => ({
+        ...e,
+        className: off(plateOf.get(e.source)),
+        ...(e.type === 'line' && { reconnectable: false }),
+      })),
     }
-  }, [doc, highlightLineId, playPathId])
+  }, [doc, highlightLineId, playPathId, focusId])
 
   // Drags move a local copy; the document only changes on drop, so one drag = one undo step
   // and plate frames stay as they were at drag start while the node moves.
@@ -127,6 +146,12 @@ export function Canvas() {
   }, [playing])
 
   const playPath = playPathId ? doc.paths?.find((p) => p.id === playPathId) : undefined
+
+  // Picking a path on another plate flies there, so "Fulfilment steps" plays in its detail plate.
+  const playPlate = playPath && doc.nodes.find((n) => n.id === playPath.nodes[0])?.plate
+  useEffect(() => {
+    if (playPlate && playPlate !== useStore.getState().focusPlateId) flyToPlate(playPlate)
+  }, [playPlate])
 
   return (
     <ReactFlow

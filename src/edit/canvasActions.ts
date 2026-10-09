@@ -1,7 +1,7 @@
 // Pure document edits behind the canvas editor. Each mutates a draft, for use
 // inside useStore.getState().edit(...), which validates the result.
 import { nodeSize, plateFrame } from '../io/layout.ts'
-import { resolvePath } from '../model/resolve.ts'
+import { overviewPlate as overview, resolvePath } from '../model/resolve.ts'
 import type { LalDocument, LalPlate } from '../model/schema.ts'
 import { allIds, newId } from './ids.ts'
 
@@ -23,7 +23,6 @@ export function plateAt(doc: LalDocument, p: Point): LalPlate | undefined {
   return doc.plates?.find((pl) => inside(absFrame(doc, pl), p))
 }
 
-const overview = (doc: LalDocument) => doc.plates?.find((p) => p.kind === 'overview') ?? doc.plates?.[0]
 
 // Removes nodes/edges and everything that would dangle: edges on removed nodes,
 // line stops (lines left with <2 nodes go), paths that no longer resolve, and
