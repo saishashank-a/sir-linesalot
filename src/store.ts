@@ -113,7 +113,7 @@ export const useStore = create<State>()((set, get) => ({
     recipe(draft)
     const issues = validateDoc(draft)
     if (issues.length) {
-      set({ issues, issuesTitle: 'That change would break the diagram, so it wasn't made' })
+      set({ issues, issuesTitle: "That change would break the diagram, so it wasn't made" })
       return false
     }
     const merge = !!opts?.coalesce && opts.coalesce === lastCoalesce
