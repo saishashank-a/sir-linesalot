@@ -3,6 +3,7 @@ import { MotionConfig } from 'motion/react'
 import { useEffect } from 'react'
 import sample from '../samples/request-flows.lal?raw'
 import { Canvas } from './canvas/Canvas.tsx'
+import { confirmDiscard, openFromFile } from './io/files.ts'
 import { CardPanel } from './panels/CardPanel.tsx'
 import { PathLineEditor } from './panels/PathLineEditor.tsx'
 import { Toolbar } from './panels/Toolbar.tsx'
@@ -50,7 +51,7 @@ export default function App() {
         onDrop={async (e) => {
           e.preventDefault()
           const f = e.dataTransfer.files[0]
-          if (f) await loadText(await f.text())
+          if (f && confirmDiscard()) await openFromFile(f)
         }}
       >
         <Toolbar />

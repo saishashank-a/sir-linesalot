@@ -1,0 +1,12 @@
+.file-menu { position: relative; }
+.file-menu-list {
+  position: absolute; top: calc(100% + 6px); right: 0; z-index: 30; min-width: 200px;
+  display: flex; flex-direction: column; padding: 6px;
+  background: var(--c-surface); border: 1.5px solid var(--c-ink); border-radius: 12px 9px 14px 10px / 10px 14px 9px 12px;
+}
+.toolbar .file-menu-list button {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  min-height: 44px; border: 0; border-radius: 8px; background: none; text-align: left;
+}
+.toolbar .file-menu-list button:hover, .toolbar .file-menu-list button:focus-visible { background: var(--c-paper); }
+.file-menu-list kbd { font: inherit; font-size: 14px; color: var(--c-muted); }
