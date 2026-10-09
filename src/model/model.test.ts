@@ -3,7 +3,7 @@ import { Ajv2020 } from 'ajv/dist/2020.js'
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
 import { LalDocumentSchema, type LalDocument } from './schema.ts'
-import { resolvePath } from './resolve.ts'
+import { pathMerges, resolvePath } from './resolve.ts'
 import { parseLal } from './validate.ts'
 
 const fixture: LalDocument = JSON.parse(readFileSync('samples/request-flows.lal', 'utf8'))
@@ -32,6 +32,10 @@ describe('fixture', () => {
     })
     expect(edgesOf('p_direct').edgeIds).toEqual(['e_submit_route', 'e_route_fulfil', 'e_fulfil_close'])
     expect(edgesOf('p_fulfil_steps').edgeIds).toHaveLength(3)
+  })
+
+  it('finds where the request flows merge: only at Fulfilment', () => {
+    expect([...pathMerges(fixture)]).toEqual([['n_fulfil', ['p_approval', 'p_self', 'p_direct']]])
   })
 })
 

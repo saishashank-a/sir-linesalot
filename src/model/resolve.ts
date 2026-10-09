@@ -39,3 +39,22 @@ export function resolvePath(doc: Pick<LalDocument, 'edges'>, path: LalPath): Pat
   }
   return out
 }
+
+// Nodes where separate paths arrive by different edges, e.g. three flows that all
+// end up at one shared stage. Maps node id -> ids of the paths that merge there.
+export function pathMerges(doc: Pick<LalDocument, 'edges' | 'paths'>): Map<string, string[]> {
+  const arrivals = new Map<string, Map<string, string[]>>() // node -> incoming edge -> paths
+  for (const p of doc.paths ?? []) {
+    resolvePath(doc, p).edgeIds.forEach((edgeId, i) => {
+      const node = p.nodes[i + 1]
+      const byEdge = arrivals.get(node) ?? new Map<string, string[]>()
+      byEdge.set(edgeId, [...(byEdge.get(edgeId) ?? []), p.id])
+      arrivals.set(node, byEdge)
+    })
+  }
+  const out = new Map<string, string[]>()
+  for (const [node, byEdge] of arrivals) {
+    if (byEdge.size > 1) out.set(node, [...new Set([...byEdge.values()].flat())])
+  }
+  return out
+}
