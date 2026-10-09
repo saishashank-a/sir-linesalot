@@ -136,6 +136,14 @@ button.icon { min-width: 36px; padding: 4px 8px; }
 }
 .sk-edge-label button { background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline dotted 1.5px; text-underline-offset: 3px; }
 
+/* Left column over the canvas: the lines legend, then (in Edit mode) the paths & lines drawer.
+   Leaves room at the bottom for the zoom controls. */
+.side-stack {
+  position: absolute; z-index: 5; top: 12px; left: 12px; max-width: calc(100% - 24px); max-height: calc(100% - 150px);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 8px; pointer-events: none;
+}
+.side-stack > * { pointer-events: auto; }
+
 /* Shared-lines legend */
 .legend { display: flex; flex-wrap: wrap; gap: 6px; }
 .legend button { display: flex; align-items: center; gap: 8px; text-align: left; }
@@ -168,3 +176,8 @@ button.icon { min-width: 36px; padding: 4px 8px; }
 }
 .issues ul { margin: 8px 0 12px; padding-left: 20px; font-size: 15px; }
 .issues code { font-size: 13px; }
+
+/* Mode switch and disabled buttons */
+.segmented { display: inline-flex; gap: 4px; }
+.toolbar .segmented button[aria-pressed='true'] { background: var(--c-ink); color: var(--c-paper); }
+.toolbar button:disabled { opacity: 0.35; cursor: default; }

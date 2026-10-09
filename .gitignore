@@ -38,3 +38,4 @@ pnpm-debug.log*
 
 # Local browser-test artifacts
 .playwright-mcp/
+.claude/worktrees/
