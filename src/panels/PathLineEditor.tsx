@@ -23,7 +23,7 @@ const listOf = (doc: LalDocument, kind: RouteKind) => (kind === 'path' ? (doc.pa
 export function PathLineEditor() {
   const doc = useStore((s) => s.doc)
   const loadCount = useStore((s) => s.loadCount)
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false) // collapsed by default so it never covers the diagram or its toolbars
   const [expanded, setExpanded] = useState<string | null>(null)
   const [stored, setDraft] = useState<Draft | null>(null)
   const [message, setMessage] = useState('')

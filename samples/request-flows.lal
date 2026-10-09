@@ -15,7 +15,7 @@
       "kind": "detail",
       "parent": "plate_overview",
       "layout": { "direction": "RIGHT", "spacing": 60 },
-      "meta": { "note": "No positions on this plate on purpose: exercises elk auto-layout." }
+      "meta": { "note": "No positions on this plate on purpose: exercises dagre auto-layout." }
     }
   ],
 
