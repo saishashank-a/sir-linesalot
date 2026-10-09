@@ -9,7 +9,7 @@ import { colorVar, gen, roughOptions, seedFromId, shapeDrawable } from './rough.
 import { RoughPaths } from './RoughPaths.tsx'
 
 export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowNode>) {
-  const { node, size, hasCard, dim, halo } = data
+  const { node, size, hasCard, dim, halo, onPath, merge } = data
   const openCard = useStore((s) => s.openCard)
   const picker = useStore((s) => s.picker)
   const editing = useStore((s) => s.mode === 'edit')
@@ -17,6 +17,8 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
   const renaming = useEditState((s) => s.renaming === node.id)
   const connectFrom = useEditState((s) => s.connectFrom === node.id)
   const narrow = useNarrow()
+  // Play mode: the token is at (or waiting on) this node.
+  const arrived = useStore((s) => !!onPath && s.doc?.paths?.find((p) => p.id === s.play.pathId)?.nodes[s.play.step] === node.id)
   // Stop numbers while a path/line route is being picked, e.g. "2" or "1, 4" for a revisit.
   const stops = useStore((s) => s.routeMarks?.nodes.flatMap((id, i) => (id === node.id ? [i + 1] : [])).join(', '))
   const markColor = useStore((s) => s.routeMarks?.color)
@@ -44,8 +46,8 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
 
   return (
     <div
-      className={`sk-node${note ? ' note' : ''}${dim ? ' dim' : ''}${halo ? ' halo' : ''}${editing ? ' editing' : ''}${selected ? ' selected' : ''}${connectFrom ? ' connect-from' : ''}`}
-      style={{ width: w, height: h, '--halo': halo } as CSSProperties}
+      className={`sk-node${note ? ' note' : ''}${dim ? ' dim' : ''}${halo ? ' halo' : ''}${editing ? ' editing' : ''}${selected ? ' selected' : ''}${connectFrom ? ' connect-from' : ''}${arrived ? ' arrived' : ''}${merge ? ' merge' : ''}`}
+      style={{ width: w, height: h, '--halo': halo, '--arrive': onPath } as CSSProperties}
     >
       <svg width={w} height={h} className="sk-shape" aria-hidden>
         <RoughPaths drawables={drawables} colors={colors} dashed={style?.dashed} />
@@ -73,6 +75,12 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
       {stops && (
         <span className="sk-stop" style={{ '--mark': markColor } as CSSProperties} aria-label={`stop ${stops}`}>
           {stops}
+        </span>
+      )}
+      {merge && (
+        <span className="sk-merge" title="Paths merge here" aria-label={`${merge.length} paths merge here`}>
+          {merge.map((c, i) => <span key={i} style={{ background: c }} />)}
+          merge
         </span>
       )}
       <NodeToolbar isVisible={editing && selected && !picker && !renaming && !narrow} position={Position.Top} offset={12}>

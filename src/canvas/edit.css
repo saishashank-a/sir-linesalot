@@ -74,3 +74,25 @@
   .is-editing .react-flow__controls { display: none; }
   .is-editing .react-flow__attribution { display: none; }
 }
+
+/* Play mode. The ink is a solid copy of the edge's clean path, revealed by dash offset. */
+.sk-ink { fill: none; stroke-width: 4; stroke-linecap: round; pointer-events: none; }
+.play-token { position: absolute; left: 0; top: 0; z-index: 10; pointer-events: none; visibility: hidden; will-change: transform; }
+.play-token svg { position: absolute; left: -16px; top: -17px; overflow: visible; filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.35)); }
+.sk-node.arrived .sk-shape {
+  transform-origin: center; animation: sk-pulse 600ms ease-in-out;
+  filter: drop-shadow(0 0 6px var(--arrive)) drop-shadow(0 0 2px var(--arrive));
+}
+@keyframes sk-pulse { 50% { transform: scale(1.06); } }
+@media (prefers-reduced-motion: reduce) { .sk-node.arrived .sk-shape { animation: none; } }
+.sk-node.merge .sk-shape { outline: 2px dashed var(--c-ink); outline-offset: 6px; border-radius: 10px; }
+.sk-merge {
+  position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); pointer-events: none;
+  display: flex; align-items: center; gap: 3px; padding: 1px 8px; white-space: nowrap;
+  font-size: 13px; color: var(--c-ink); background: var(--c-surface); border: 1.5px solid var(--c-ink); border-radius: 10px;
+}
+.sk-merge span { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--c-ink); }
+.play-bar select { min-height: 32px; font: inherit; color: var(--c-ink); background: var(--c-paper); border: 1.5px solid var(--c-grid); border-radius: 8px; }
+.play-bar button[aria-pressed='true'] { background: var(--c-ink); color: var(--c-paper); }
+.play-path { display: flex; align-items: center; gap: 6px; }
+.play-path .swatch { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--c-ink); }
