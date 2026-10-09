@@ -47,6 +47,9 @@ export function Canvas() {
   const { openCard, toggleLine, edit } = useStore.getState()
   const { getInternalNode } = useReactFlow()
   const touches = useTouchCount()
+  const narrow = useNarrow()
+  // Phones open on the overview plate: every plate side by side is too small to read there.
+  const startPlate = doc.plates?.find((p) => p.kind === 'overview') ?? doc.plates?.[0]
 
   const flow = useMemo(() => {
     const { nodes, edges } = docToFlow(doc, highlightLineId, playPathId)
@@ -154,7 +157,7 @@ export function Canvas() {
       deleteKeyCode={null}
       colorMode={theme === 'auto' ? 'system' : theme}
       fitView
-      fitViewOptions={{ padding: 0.1 }}
+      fitViewOptions={{ padding: 0.1, ...(narrow && startPlate && { nodes: [{ id: startPlate.id }] }) }}
       minZoom={0.1}
     >
       <Background variant={BackgroundVariant.Dots} gap={24} size={1.4} color="var(--c-grid)" />

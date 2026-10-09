@@ -95,6 +95,10 @@ button { font: inherit; color: inherit; }
   background: var(--c-surface); cursor: pointer;
 }
 button.icon { min-width: 36px; padding: 4px 8px; }
+@media (pointer: coarse) {
+  .toolbar button, .issues button, .legend button { min-height: 44px; }
+  button.icon { min-width: 44px; }
+}
 
 /* React Flow */
 .react-flow { --xy-background-color: var(--c-paper); }
