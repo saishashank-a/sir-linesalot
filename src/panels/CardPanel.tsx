@@ -14,7 +14,9 @@ export function CardPanel() {
   const close = useStore((s) => s.closeCard)
   const editing = useStore((s) => s.mode === 'edit')
   const card = doc?.cards?.find((c) => c.target === target)
-  const portal = doc?.nodes.find((n) => n.id === target)?.link
+  const focusPlateId = useStore((s) => s.focusPlateId)
+  const link = doc?.nodes.find((n) => n.id === target)?.link
+  const portal = link?.plate !== focusPlateId ? link : undefined // hidden once you're there
   const open = !!target && (!!card || editing) // edit mode can open a card that doesn't exist yet
   const narrow = useNarrow()
   const ref = useRef<HTMLElement>(null)

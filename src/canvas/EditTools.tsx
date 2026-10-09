@@ -51,7 +51,8 @@ export function NodeTools({ node }: { node: LalNode }) {
   const connecting = useEditState((s) => s.connectFrom === node.id)
   const { setRenaming, setConnectFrom } = useEditState.getState()
   const openCard = useStore((s) => s.openCard)
-  const otherPlates = useStore((s) => s.doc?.plates?.filter((p) => p.id !== node.plate))
+  const plates = useStore((s) => s.doc?.plates)
+  const otherPlates = plates?.filter((p) => p.id !== node.plate)
   const note = node.kind === 'note'
 
   return (

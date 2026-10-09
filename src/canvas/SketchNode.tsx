@@ -47,8 +47,8 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
   // bottom sheet would cover the plate you just flew to).
   const activate = () => {
     if (!node.link) return openCard(node.id)
+    if (!narrow) openCard(node.id) // first, so the camera frames the plate beside the card
     flyToPlate(node.link.plate)
-    if (!narrow) openCard(node.id)
   }
   const Label = tappable ? 'button' : 'div'
 

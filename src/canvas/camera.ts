@@ -24,6 +24,17 @@ export const union = (a: Rect, b: Rect): Rect => {
 export const focusedPlate = (doc: LalDocument, focusPlateId: string | null) =>
   doc.plates?.find((p) => p.id === focusPlateId) ?? overviewPlate(doc)
 
+// Wide screens show cards in a side panel over the canvas's right edge (380px + margin).
+// While one is open, widen the box to fit so the plate lands in the space left of it.
+const SIDE_CARD = 392
+function besideCard(r: Rect): Rect {
+  const { doc, openCardTarget, mode } = useStore.getState()
+  const cardOpen = !!openCardTarget && (mode === 'edit' || !!doc?.cards?.some((c) => c.target === openCardTarget))
+  const w = document.querySelector('.react-flow')?.clientWidth ?? 0
+  if (!cardOpen || matchMedia('(max-width: 640px)').matches || w <= SIDE_CARD * 2) return r
+  return { ...r, width: (r.width * w) / (w - SIDE_CARD) }
+}
+
 // Two-stage move so you see where you're going: out to fit both plates, then in to the target.
 export async function flyToPlate(plateId: string) {
   const { doc, focusPlateId, setFocusPlate } = useStore.getState()
@@ -32,7 +43,7 @@ export async function flyToPlate(plateId: string) {
   const from = focusedPlate(doc, focusPlateId)
   setFocusPlate(to.id)
   if (!fitBounds) return
-  const target = absFrame(doc, to)
+  const target = besideCard(absFrame(doc, to))
   if (reduced()) {
     await fitBounds(target, { padding: 0.1 })
     return
