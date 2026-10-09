@@ -3,7 +3,7 @@ import { Ajv2020 } from 'ajv/dist/2020.js'
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
 import { LalDocumentSchema, type LalDocument } from './schema.ts'
-import { pathMerges, resolvePath } from './resolve.ts'
+import { pathMerges, plateTrail, resolvePath } from './resolve.ts'
 import { parseLal } from './validate.ts'
 
 const fixture: LalDocument = JSON.parse(readFileSync('samples/request-flows.lal', 'utf8'))
@@ -104,5 +104,21 @@ describe('semantic rules', () => {
 
   it('7: notes stay out of edges, paths and lines', () => {
     expect(paths(broken((d) => { d.lines![1].nodes.push('n_note') }))).toEqual(['lines[1].nodes[3]'])
+  })
+})
+
+describe('plateTrail', () => {
+  const ids = (d: LalDocument, id: string) => plateTrail(d, id).map((p) => p.id)
+
+  it('follows parents from the overview down', () => {
+    expect(ids(fixture, 'plate_fulfilment')).toEqual(['plate_overview', 'plate_fulfilment'])
+    expect(ids(fixture, 'plate_overview')).toEqual(['plate_overview'])
+    expect(ids(fixture, 'nope')).toEqual([])
+  })
+
+  it('puts the overview in front of a plate without a parent', () => {
+    const d = structuredClone(fixture)
+    d.plates!.push({ id: 'plate_a', title: 'A' }, { id: 'plate_b', title: 'B', parent: 'plate_a' })
+    expect(ids(d, 'plate_b')).toEqual(['plate_overview', 'plate_a', 'plate_b'])
   })
 })

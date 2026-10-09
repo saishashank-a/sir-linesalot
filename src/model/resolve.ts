@@ -1,4 +1,4 @@
-import type { LalDocument, LalEdge, LalPath } from './schema.ts'
+import type { LalDocument, LalEdge, LalPath, LalPlate } from './schema.ts'
 
 export interface PathResolution {
   edgeIds: string[]
@@ -57,4 +57,22 @@ export function pathMerges(doc: Pick<LalDocument, 'edges' | 'paths'>): Map<strin
     if (byEdge.size > 1) out.set(node, [...new Set([...byEdge.values()].flat())])
   }
   return out
+}
+
+export const overviewPlate = (doc: Pick<LalDocument, 'plates'>) =>
+  doc.plates?.find((p) => p.kind === 'overview') ?? doc.plates?.[0]
+
+// Breadcrumbs for a plate: its `parent` chain from the root down to the plate itself.
+// A chain that doesn't start at the overview gets the overview in front, so there's
+// always a way home.
+export function plateTrail(doc: Pick<LalDocument, 'plates'>, plateId: string): LalPlate[] {
+  const plates = doc.plates ?? []
+  const trail: LalPlate[] = []
+  // Validation rules out cycles; the length guard keeps a bad doc from hanging.
+  for (let p = plates.find((x) => x.id === plateId); p && trail.length <= plates.length; p = plates.find((x) => x.id === p!.parent)) {
+    trail.unshift(p)
+  }
+  const home = overviewPlate(doc)
+  if (home && trail[0] && trail[0] !== home) trail.unshift(home)
+  return trail
 }

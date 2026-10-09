@@ -50,6 +50,8 @@ interface State {
   picker: ((nodeId: string) => void) | null
   // The route being picked, so the canvas can number its stops (color is a CSS colour).
   routeMarks: { nodes: string[]; color: string } | null
+  // The plate the camera last flew to (null = the overview). Other plates dim slightly.
+  focusPlateId: string | null
 
   loadText: (text: string, source?: { fileName?: string; fileHandle?: FileSystemFileHandle }) => Promise<void>
   openCard: (target: string) => void
@@ -65,6 +67,7 @@ interface State {
   setPicker: (picker: ((nodeId: string) => void) | null) => void
   setPlay: (patch: Partial<PlayState>) => void
   setRouteMarks: (marks: State['routeMarks']) => void
+  setFocusPlate: (plateId: string | null) => void
 }
 
 export const useStore = create<State>()((set, get) => ({
@@ -85,6 +88,7 @@ export const useStore = create<State>()((set, get) => ({
   fileHandle: null,
   picker: null,
   routeMarks: null,
+  focusPlateId: null,
 
   async loadText(text, source) {
     const { doc, issues } = readLal(text)
@@ -110,6 +114,7 @@ export const useStore = create<State>()((set, get) => ({
       picker: null,
       play: { ...s.play, ...PLAY_IDLE },
       routeMarks: null,
+      focusPlateId: null,
     }))
   },
 
@@ -165,4 +170,5 @@ export const useStore = create<State>()((set, get) => ({
   setPicker: (picker) => set({ picker }),
   setPlay: (patch) => set((s) => ({ play: { ...s.play, ...patch } })),
   setRouteMarks: (routeMarks) => set({ routeMarks }),
+  setFocusPlate: (focusPlateId) => set({ focusPlateId }),
 }))
