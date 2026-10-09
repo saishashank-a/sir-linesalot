@@ -6,8 +6,8 @@ const d: LalDocument = {
   format: 'lal', version: 1, id: 'x', title: 'X',
   nodes: [{ id: 'a', label: 'A' }, { id: 'b', label: 'B' }],
   edges: [],
-  paths: [{ id: 'p1', nodes: ['a', 'b'], color: 'violet' }, { id: 'p2', nodes: ['a', 'b'] }],
-  lines: [{ id: 'l1', nodes: ['a', 'b'] }, { id: 'l2', nodes: ['a', 'b'] }],
+  paths: [{ id: 'p1', name: 'P1', nodes: ['a', 'b'], color: 'violet' }, { id: 'p2', name: 'P2', nodes: ['a', 'b'] }],
+  lines: [{ id: 'l1', name: 'L1', nodes: ['a', 'b'] }, { id: 'l2', name: 'L2', nodes: ['a', 'b'] }],
 }
 
 it('an explicit colour wins over the cycle', () => {
@@ -26,6 +26,6 @@ it('missing colours cycle by index', () => {
 
 it('an item not in the document (index -1) still gets a colour', () => {
   expect(autoColor(undefined, -1)).toBe('var(--c-red)')
-  expect(lineColor(d, { id: 'new', nodes: ['a', 'b'] })).toBe('var(--c-red)')
-  expect(pathColor({ ...d, paths: undefined }, { id: 'new', nodes: ['a'] })).toBe('var(--c-red)')
+  expect(lineColor(d, { id: 'new', name: 'New', nodes: ['a', 'b'] })).toBe('var(--c-red)')
+  expect(pathColor({ ...d, paths: undefined }, { id: 'new', name: 'New', nodes: ['a'] })).toBe('var(--c-red)')
 })
