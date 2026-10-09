@@ -9,12 +9,19 @@
     "test": "vitest run",
     "schema": "node scripts/gen-schema.ts",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "licenses": "node scripts/gen-licenses.ts"
   },
   "dependencies": {
+    "@dagrejs/dagre": "^3.1.1",
+    "@xyflow/react": "^12.12.0",
+    "motion": "^14.1.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "zod": "^4.6.5"
+    "react-markdown": "^10.1.0",
+    "roughjs": "^4.6.6",
+    "zod": "^4.6.5",
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
