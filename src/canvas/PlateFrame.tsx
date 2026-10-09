@@ -8,6 +8,7 @@ import { RoughPaths } from './RoughPaths.tsx'
 export const PlateFrame = memo(function PlateFrame({ data }: NodeProps<PlateFlowNode>) {
   const { plate, size, hasCard } = data
   const openCard = useStore((s) => s.openCard)
+  const editing = useStore((s) => s.mode === 'edit')
   const overview = plate.kind === 'overview'
   const { width: w, height: h } = size
 
@@ -21,8 +22,9 @@ export const PlateFrame = memo(function PlateFrame({ data }: NodeProps<PlateFlow
       <svg width={w} height={h} aria-hidden>
         <RoughPaths drawables={frame} colors={{ S: 'var(--c-frame)' }} />
       </svg>
-      {hasCard ? (
-        <button type="button" className="sk-plate-title has-card" onClick={() => openCard(plate.id)} aria-label={`${plate.title}, open card`}>
+      {/* In Edit mode the title is also the plate's drag handle. */}
+      {hasCard || editing ? (
+        <button type="button" className="sk-plate-title has-card" onClick={() => openCard(plate.id)} aria-label={`${plate.title}, ${editing ? 'edit card, or drag to move the plate' : 'open card'}`}>
           {plate.title}
         </button>
       ) : (
