@@ -1,7 +1,8 @@
 // Edit-mode controls attached to a selected node or edge, plus the inline label input.
 import { useEffect, useRef } from 'react'
-import { PALETTE, type LalEdge, type LalNode } from '../model/schema.ts'
+import { PALETTE, type LalEdge, type LalNode, type LalPlate } from '../model/schema.ts'
 import { useStore } from '../store.ts'
+import { plateDeleteBlocker } from '../edit/canvasActions.ts'
 import { commitLabel, deleteSelected, useEditState } from './editState.ts'
 
 const SHAPES = ['rectangle', 'ellipse', 'diamond', 'pill'] as const
@@ -89,6 +90,23 @@ export function NodeTools({ node }: { node: LalNode }) {
   )
 }
 
+export function PlateTools({ plate }: { plate: LalPlate }) {
+  const { setRenaming } = useEditState.getState()
+  const openCard = useStore((s) => s.openCard)
+  const only = useStore((s) => s.doc?.plates?.length === 1)
+  const blocked = useStore((s) => (s.doc ? plateDeleteBlocker(s.doc, plate.id) : null))
+  return (
+    <div className="edit-tools nodrag nopan" role="toolbar" aria-label={`Edit plate ${plate.title}`}>
+      <button type="button" onClick={() => setRenaming(plate.id)}>Rename</button>
+      <button type="button" onClick={() => openCard(plate.id)}>Card</button>
+      {/* Deleting the only plate keeps its contents and just removes the frame. */}
+      <button type="button" className="danger" disabled={!!blocked} title={blocked ?? undefined} onClick={deleteSelected}>
+        {only ? 'Remove frame' : 'Delete plate'}
+      </button>
+    </div>
+  )
+}
+
 export function EdgeTools({ edge }: { edge: LalEdge }) {
   const { setRenaming } = useEditState.getState()
   const openCard = useStore((s) => s.openCard)
@@ -112,4 +130,23 @@ export function EdgeTools({ edge }: { edge: LalEdge }) {
       <button type="button" className="danger" onClick={deleteSelected}>Delete</button>
     </div>
   )
+}
+
+
+// Whatever is selected, as one toolbar. Phones show this in the bottom dock instead of
+// floating it over the canvas, where it wouldn't fit.
+export function SelectionTools() {
+  const selected = useEditState((s) => s.selected)
+  const doc = useStore((s) => s.doc)
+  if (!selected || !doc) return null
+  if (selected.kind === 'node') {
+    const node = doc.nodes.find((n) => n.id === selected.id)
+    return node ? <NodeTools node={node} /> : null
+  }
+  if (selected.kind === 'edge') {
+    const edge = doc.edges.find((e) => e.id === selected.id)
+    return edge ? <EdgeTools edge={edge} /> : null
+  }
+  const plate = doc.plates?.find((p) => p.id === selected.id)
+  return plate ? <PlateTools plate={plate} /> : null
 }

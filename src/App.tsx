@@ -3,11 +3,13 @@ import { MotionConfig } from 'motion/react'
 import { useEffect } from 'react'
 import sample from '../samples/request-flows.lal?raw'
 import { Canvas } from './canvas/Canvas.tsx'
-import { confirmDiscard, openFromFile } from './io/files.ts'
+import { openDropped } from './io/files.ts'
 import { CardPanel } from './panels/CardPanel.tsx'
+import { Legend } from './panels/Legend.tsx'
 import { PathLineEditor } from './panels/PathLineEditor.tsx'
 import { Toolbar } from './panels/Toolbar.tsx'
 import { useStore } from './store.ts'
+import { typingIn } from './typing.ts'
 
 export default function App() {
   const doc = useStore((s) => s.doc)
@@ -26,8 +28,7 @@ export default function App() {
   useEffect(() => {
     if (mode !== 'edit') return
     const onKey = (e: KeyboardEvent) => {
-      const t = e.target as HTMLElement
-      if (t.closest('input, textarea, [contenteditable="true"]') || !(e.metaKey || e.ctrlKey)) return
+      if (typingIn(e.target) || !(e.metaKey || e.ctrlKey)) return
       const key = e.key.toLowerCase()
       if (key === 'z' && !e.shiftKey) useStore.getState().undo()
       else if ((key === 'z' && e.shiftKey) || key === 'y') useStore.getState().redo()
@@ -48,10 +49,9 @@ export default function App() {
       <div
         className="app"
         onDragOver={(e) => e.preventDefault()}
-        onDrop={async (e) => {
+        onDrop={(e) => {
           e.preventDefault()
-          const f = e.dataTransfer.files[0]
-          if (f && confirmDiscard()) await openFromFile(f)
+          openDropped(e.dataTransfer)
         }}
       >
         <Toolbar />
@@ -61,8 +61,12 @@ export default function App() {
               <Canvas />
             </ReactFlowProvider>
           )}
+          {/* One column, so a legend that wraps pushes the drawer down instead of under it. */}
+          <div className="side-stack">
+            <Legend />
+            {mode === 'edit' && <PathLineEditor />}
+          </div>
           <CardPanel />
-          {mode === 'edit' && <PathLineEditor />}
         </main>
         {!!issues.length && (
           <div className="issues" role="alert">

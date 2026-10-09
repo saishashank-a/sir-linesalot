@@ -1,5 +1,6 @@
 import { EdgeLabelRenderer, getBezierPath, useInternalNode, type EdgeProps } from '@xyflow/react'
 import { memo, useMemo } from 'react'
+import { useNarrow } from '../useNarrow.ts'
 import { useStore } from '../store.ts'
 import type { SketchFlowEdge } from './adapter.ts'
 import { useEditState } from './editState.ts'
@@ -16,6 +17,7 @@ export const SketchEdge = memo(function SketchEdge({ id, source, target, data }:
   const editing = useStore((st) => st.mode === 'edit')
   const selected = useEditState((st) => st.selected?.kind === 'edge' && st.selected.id === id)
   const renaming = useEditState((st) => st.renaming === id)
+  const narrow = useNarrow()
   const { edge, hasCard, dim } = data!
   const select = () => useEditState.getState().select({ kind: 'edge', id })
 
@@ -71,7 +73,7 @@ export const SketchEdge = memo(function SketchEdge({ id, source, target, data }:
               <LabelInput id={id} initial={edge.label ?? ''} />
             </div>
           )}
-          {selected && !renaming && (
+          {selected && !renaming && !narrow && (
             <div className="edge-tools-anchor nodrag nopan" style={{ transform: `translate(-50%, -100%) translate(${geo.labelX}px, ${geo.labelY - 18}px)` }}>
               <EdgeTools edge={edge} />
             </div>

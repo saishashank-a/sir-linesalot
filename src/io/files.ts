@@ -9,6 +9,8 @@ interface FsaWindow {
   showOpenFilePicker?: (o: { types: PickerType[] }) => Promise<FileSystemFileHandle[]>
   showSaveFilePicker?: (o: { types: PickerType[]; suggestedName: string }) => Promise<FileSystemFileHandle>
 }
+// Chromium only, on drop items.
+type DropHandleItem = { getAsFileSystemHandle?: () => Promise<FileSystemHandle | null> }
 const fsa = () => window as unknown as FsaWindow
 const LAL_TYPES: PickerType[] = [{ description: 'Sir Lines-a-Lot document', accept: { 'application/json': ['.lal'] } }]
 
@@ -43,9 +45,22 @@ export async function openFile(fallbackInput: HTMLInputElement | null) {
   }
 }
 
-// A plain File (input fallback, drag-drop): no handle, so Save becomes Save as.
+// A plain File (the <input> fallback): no handle, so Save becomes Save as.
 export async function openFromFile(file: File) {
   await useStore.getState().loadText(await file.text(), { fileName: file.name })
+}
+
+// Drag-drop. Chromium can hand over a writable handle, so Save writes back to the
+// dropped file; elsewhere it behaves like openFromFile.
+export async function openDropped(dt: DataTransfer) {
+  const item = [...dt.items].find((i) => i.kind === 'file') as (DataTransferItem & DropHandleItem) | undefined
+  // Must be asked for before anything awaits: the DataTransfer empties once the drop event ends.
+  const handle = item?.getAsFileSystemHandle?.().catch(() => null)
+  const file = dt.files[0]
+  if (!file || !confirmDiscard()) return
+  const h = await handle
+  const fileHandle = h?.kind === 'file' ? (h as FileSystemFileHandle) : undefined
+  await useStore.getState().loadText(await file.text(), { fileName: file.name, fileHandle })
 }
 
 export async function save() {

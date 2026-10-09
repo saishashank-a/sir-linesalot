@@ -1,6 +1,6 @@
-/* Paths & lines drawer: left side, below the lines legend and above the zoom controls. */
+/* Paths & lines drawer: in the side stack, below the lines legend and above the zoom controls. */
 .ple {
-  position: absolute; z-index: 5; left: 12px; top: 64px; width: 280px; max-height: calc(100% - 64px - 130px);
+  width: 280px; min-height: 0; flex: 0 1 auto;
   display: flex; flex-direction: column; background: var(--c-surface); border: 1.5px solid var(--c-ink);
   border-radius: 12px 14px 10px 13px;
 }
@@ -42,7 +42,9 @@
   .ple-chips button { min-width: 44px; }
 }
 
-/* Phones: a bottom sheet instead of a side drawer. The card sheet (z-index 10) covers it when open. */
+/* Phones: a bottom sheet instead of a side drawer. Collapsed, its 48px header sits under the
+   docked edit bar (see edit.css); open, it covers the bar. The card sheet (z-index 10) covers it. */
 @media (max-width: 640px) {
-  .ple { left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 50%; border-radius: 16px 16px 0 0; border-bottom: 0; }
+  .ple { position: fixed; left: 0; right: 0; bottom: 0; width: auto; max-height: 50%; border-radius: 16px 16px 0 0; border-bottom: 0; }
+  .ple-head { min-height: 48px !important; }
 }

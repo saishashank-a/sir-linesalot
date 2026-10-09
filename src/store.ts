@@ -48,6 +48,8 @@ interface State {
 
   // While set, tapping a node calls this instead of its normal action (path/line editors pick nodes this way).
   picker: ((nodeId: string) => void) | null
+  // The route being picked, so the canvas can number its stops (color is a CSS colour).
+  routeMarks: { nodes: string[]; color: string } | null
 
   loadText: (text: string, source?: { fileName?: string; fileHandle?: FileSystemFileHandle }) => Promise<void>
   openCard: (target: string) => void
@@ -62,6 +64,7 @@ interface State {
   markSaved: (source?: { fileName?: string; fileHandle?: FileSystemFileHandle | null }) => void
   setPicker: (picker: ((nodeId: string) => void) | null) => void
   setPlay: (patch: Partial<PlayState>) => void
+  setRouteMarks: (marks: State['routeMarks']) => void
 }
 
 export const useStore = create<State>()((set, get) => ({
@@ -81,6 +84,7 @@ export const useStore = create<State>()((set, get) => ({
   fileName: null,
   fileHandle: null,
   picker: null,
+  routeMarks: null,
 
   async loadText(text, source) {
     const { doc, issues } = readLal(text)
@@ -105,6 +109,7 @@ export const useStore = create<State>()((set, get) => ({
       fileHandle: source?.fileHandle ?? null,
       picker: null,
       play: { ...s.play, ...PLAY_IDLE },
+      routeMarks: null,
     }))
   },
 
@@ -117,7 +122,7 @@ export const useStore = create<State>()((set, get) => ({
   toggleLine: (lineId) => set((s) => ({ highlightLineId: s.highlightLineId === lineId ? null : lineId })),
   setTheme: (theme) => set({ theme }),
   clearIssues: () => set({ issues: [] }),
-  setMode: (mode) => set((s) => ({ mode, picker: null, lastCoalesce: null, play: { ...s.play, ...PLAY_IDLE } })),
+  setMode: (mode) => set((s) => ({ mode, picker: null, routeMarks: null, lastCoalesce: null, play: { ...s.play, ...PLAY_IDLE } })),
 
   // The only way to change the document. Applies `recipe` to a copy, refuses the
   // change if the result breaks a rule (so the doc is always valid), and records undo.
@@ -159,4 +164,5 @@ export const useStore = create<State>()((set, get) => ({
     })),
   setPicker: (picker) => set({ picker }),
   setPlay: (patch) => set((s) => ({ play: { ...s.play, ...patch } })),
+  setRouteMarks: (routeMarks) => set({ routeMarks }),
 }))

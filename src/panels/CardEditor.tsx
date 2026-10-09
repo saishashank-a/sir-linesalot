@@ -1,6 +1,6 @@
 // Edit-mode card editor for nodes, edges, lines and plates. Every change goes
 // through store.edit(); typing in one input coalesces into one undo step.
-import { useRef } from 'react'
+import { useLayoutEffect, useRef, type TextareaHTMLAttributes } from 'react'
 import { addField, labelOf, moveField, removeField, safeUrl, updateField } from '../edit/cards.ts'
 import { newId } from '../edit/ids.ts'
 import type { LalCard, LalCardField } from '../model/schema.ts'
@@ -99,7 +99,7 @@ export function CardEditor({ target }: { target: string }) {
                   onChange={(e) => set({ value: e.target.value }, 'value')}
                 />
               ) : (
-                <textarea aria-label={`Field ${i + 1} value`} value={f.value} rows={3} onChange={(e) => set({ value: e.target.value }, 'value')} />
+                <GrowingTextarea aria-label={`Field ${i + 1} value`} value={f.value} rows={3} onChange={(e) => set({ value: e.target.value }, 'value')} />
               )}
               {badUrl && <p id={hintId} className="ce-hint">Only http(s) and mailto links open. This one will show as plain text.</p>}
               {format === 'markdown' && f.value.trim() && (
@@ -129,4 +129,18 @@ export function CardEditor({ target }: { target: string }) {
       </div>
     </div>
   )
+}
+
+// CSS `field-sizing: content` grows textareas in Chromium; elsewhere, size to the content by hand.
+const growsNatively = typeof CSS !== 'undefined' && CSS.supports('field-sizing', 'content')
+
+function GrowingTextarea(props: TextareaHTMLAttributes<HTMLTextAreaElement> & { value: string }) {
+  const ref = useRef<HTMLTextAreaElement>(null)
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (growsNatively || !el) return
+    el.style.height = 'auto'
+    el.style.height = `${el.scrollHeight + 3}px` // + borders
+  }, [props.value])
+  return <textarea ref={ref} {...props} />
 }

@@ -2,7 +2,7 @@
 // source of truth; this runs again whenever it (or the highlight) changes.
 import type { Edge, Node } from '@xyflow/react'
 import { nodeSize, plateFrame, type Rect, type Size } from '../io/layout.ts'
-import type { LalDocument, LalEdge, LalLine, LalNode, LalPlate } from '../model/schema.ts'
+import type { LalDocument, LalEdge, LalLine, LalNode, LalPath, LalPlate } from '../model/schema.ts'
 import { colorVar } from './rough.ts'
 
 export type StepData = { node: LalNode; size: Size; hasCard: boolean; dim: boolean; halo?: string }
@@ -15,9 +15,12 @@ export type PlateFlowNode = Node<PlateData, 'plate'>
 export type SketchFlowEdge = Edge<SketchEdgeData, 'sketch'>
 export type LineFlowEdge = Edge<LineEdgeData, 'line'>
 
-const LINE_COLORS = ['red', 'blue', 'green', 'orange', 'violet', 'teal', 'pink']
-export const lineColor = (doc: LalDocument, line: LalLine) =>
-  colorVar(line.color ?? LINE_COLORS[(doc.lines ?? []).indexOf(line) % LINE_COLORS.length], 'var(--c-ink)')
+// Paths and lines without a colour cycle through these by their position in the document.
+const AUTO_COLORS = ['red', 'blue', 'green', 'orange', 'violet', 'teal', 'pink']
+export const autoColor = (color: string | undefined, index: number) =>
+  colorVar(color || AUTO_COLORS[Math.max(index, 0) % AUTO_COLORS.length], 'var(--c-ink)')
+export const lineColor = (doc: LalDocument, line: LalLine) => autoColor(line.color, (doc.lines ?? []).indexOf(line))
+export const pathColor = (doc: LalDocument, path: LalPath) => autoColor(path.color, (doc.paths ?? []).indexOf(path))
 
 export function docToFlow(doc: LalDocument, highlightLineId: string | null) {
   const carded = new Set((doc.cards ?? []).map((c) => c.target))

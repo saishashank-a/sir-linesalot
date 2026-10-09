@@ -1,5 +1,6 @@
 import { Handle, NodeToolbar, Position, type NodeProps } from '@xyflow/react'
 import { memo, useMemo, useRef, type CSSProperties } from 'react'
+import { useNarrow } from '../useNarrow.ts'
 import { useStore } from '../store.ts'
 import type { StepFlowNode } from './adapter.ts'
 import { tapNode, useEditState } from './editState.ts'
@@ -15,6 +16,10 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
   const selected = useEditState((s) => s.selected?.kind === 'node' && s.selected.id === node.id)
   const renaming = useEditState((s) => s.renaming === node.id)
   const connectFrom = useEditState((s) => s.connectFrom === node.id)
+  const narrow = useNarrow()
+  // Stop numbers while a path/line route is being picked, e.g. "2" or "1, 4" for a revisit.
+  const stops = useStore((s) => s.routeMarks?.nodes.flatMap((id, i) => (id === node.id ? [i + 1] : [])).join(', '))
+  const markColor = useStore((s) => s.routeMarks?.color)
   const press = useLongPress(() => editing && !picker && useEditState.getState().select({ kind: 'node', id: node.id }))
   const note = node.kind === 'note'
   const shape = note ? 'rectangle' : (node.shape ?? 'rectangle')
@@ -65,7 +70,12 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
           {node.label}
         </Label>
       )}
-      <NodeToolbar isVisible={editing && selected && !picker && !renaming} position={Position.Top} offset={12}>
+      {stops && (
+        <span className="sk-stop" style={{ '--mark': markColor } as CSSProperties} aria-label={`stop ${stops}`}>
+          {stops}
+        </span>
+      )}
+      <NodeToolbar isVisible={editing && selected && !picker && !renaming && !narrow} position={Position.Top} offset={12}>
         <NodeTools node={node} />
       </NodeToolbar>
       <Handle type="target" position={Position.Left} className="sk-handle" isConnectable={editing && !note} />
