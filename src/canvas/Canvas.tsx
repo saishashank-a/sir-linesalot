@@ -15,8 +15,11 @@ import {
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { addEdge, addNode, addPlate, moveNode, movePlate } from '../edit/canvasActions.ts'
 import { useStore } from '../store.ts'
-import { docToFlow, lineColor, type LineFlowEdge, type PlateFlowNode, type SketchFlowEdge, type StepFlowNode } from './adapter.ts'
+import { docToFlow, type LineFlowEdge, type PlateFlowNode, type SketchFlowEdge, type StepFlowNode } from './adapter.ts'
+import { typingIn } from '../typing.ts'
+import { useNarrow } from '../useNarrow.ts'
 import { deleteSelected, useEditState } from './editState.ts'
+import { SelectionTools } from './EditTools.tsx'
 import { LineEdge } from './LineEdge.tsx'
 import { PlateFrame } from './PlateFrame.tsx'
 import { SketchEdge } from './SketchEdge.tsx'
@@ -27,7 +30,6 @@ const nodeTypes = { step: SketchNode, plate: PlateFrame }
 const edgeTypes = { sketch: SketchEdge, line: LineEdge }
 type FlowNode = StepFlowNode | PlateFlowNode
 
-const typingIn = (t: EventTarget | null) => !!(t as HTMLElement | null)?.closest?.('input, textarea, select, [contenteditable="true"]')
 
 // View mode: nothing drags, connects or selects; taps open cards and highlight lines.
 // Edit mode: drag nodes and plates, connect/reconnect, select to get a toolbar.
@@ -130,21 +132,6 @@ export function Canvas() {
     >
       <Background variant={BackgroundVariant.Dots} gap={24} size={1.4} color="var(--c-grid)" />
       <Controls showInteractive={false} />
-      {!!doc.lines?.length && (
-        <Panel position="top-left" className="legend" aria-label="Shared lines">
-          {doc.lines.map((l) => (
-            <button
-              key={l.id}
-              type="button"
-              aria-pressed={highlightLineId === l.id}
-              onClick={() => toggleLine(l.id)}
-            >
-              <span className="swatch" style={{ background: lineColor(doc, l) }} />
-              {l.name}
-            </button>
-          ))}
-        </Panel>
-      )}
       {editing && <EditPalette />}
     </ReactFlow>
   )
@@ -155,6 +142,8 @@ function EditPalette() {
   const { fitView } = useReactFlow()
   const connectFrom = useEditState((s) => s.connectFrom)
   const hasSelection = useEditState((s) => !!s.selected)
+  const hint = useEditState((s) => s.hint)
+  const narrow = useNarrow()
   const fromLabel = useStore((s) => s.doc?.nodes.find((n) => n.id === connectFrom)?.label)
   const { edit } = useStore.getState()
 
@@ -177,12 +166,20 @@ function EditPalette() {
     setTimeout(() => fitView({ nodes: [{ id: ids.plateId }], duration: 400, padding: 0.3 }), 50)
   }
 
+  // Phones dock the palette at the bottom and swap in the selection's tools, which
+  // don't fit floating over the canvas there.
   return (
-    <Panel position="bottom-center" className="edit-palette" aria-label="Add">
+    <Panel position="bottom-center" className="edit-palette" aria-label={narrow && hasSelection && !connectFrom ? 'Selection' : 'Add'}>
+      {hint && <span className="hint" role="status">{hint}</span>}
       {connectFrom ? (
         <>
-          <span className="hint" role="status">Tap the node to connect “{fromLabel}” to</span>
+          {!hint && <span className="hint" role="status">Tap the node to connect “{fromLabel}” to</span>}
           <button type="button" onClick={() => useEditState.getState().setConnectFrom(null)}>Cancel</button>
+        </>
+      ) : narrow && hasSelection ? (
+        <>
+          <SelectionTools />
+          <button type="button" onClick={() => useEditState.getState().reset()}>Done</button>
         </>
       ) : (
         <>

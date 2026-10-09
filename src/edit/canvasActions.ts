@@ -27,7 +27,7 @@ const overview = (doc: LalDocument) => doc.plates?.find((p) => p.kind === 'overv
 
 // Removes nodes/edges and everything that would dangle: edges on removed nodes,
 // line stops (lines left with <2 nodes go), paths that no longer resolve, and
-// cards whose target is gone.
+// cards whose target is gone. Plates go through deletePlate.
 export function deleteElements(doc: LalDocument, ids: Iterable<string>) {
   const gone = new Set(ids)
   doc.nodes = doc.nodes.filter((n) => !gone.has(n.id))
@@ -43,6 +43,43 @@ export function deleteElements(doc: LalDocument, ids: Iterable<string>) {
   }
   const left = allIds(doc)
   if (doc.cards) doc.cards = doc.cards.filter((c) => left.has(c.target))
+}
+
+// Why a plate can't be deleted, or null if it can. The overview anchors the
+// breadcrumbs, so it only goes when it's the last plate.
+export function plateDeleteBlocker(doc: LalDocument, id: string): string | null {
+  const p = doc.plates?.find((x) => x.id === id)
+  if (!p) return 'No such plate'
+  if (p === overview(doc) && doc.plates!.length > 1) return "The overview can't be deleted while other plates exist"
+  return null
+}
+
+// Deletes a plate with everything on it. Portals into it stop being portals and
+// its child plates move up to its parent. Deleting the last plate leaves a
+// plate-less document, which is allowed.
+export function deletePlate(doc: LalDocument, id: string) {
+  const p = doc.plates?.find((x) => x.id === id)
+  if (!p) return
+  const last = doc.plates!.length === 1
+  doc.plates = doc.plates!.filter((x) => x !== p)
+  for (const child of doc.plates) {
+    if (child.parent !== id) continue
+    if (p.parent) child.parent = p.parent
+    else delete child.parent
+  }
+  for (const n of doc.nodes) if (n.link?.plate === id) delete n.link
+  if (last) {
+    // No plates left: the nodes stay where they are, just without a plate.
+    const o = p.position ?? { x: 0, y: 0 }
+    delete doc.plates
+    for (const n of doc.nodes) {
+      delete n.plate
+      if (n.position) n.position = { x: n.position.x + o.x, y: n.position.y + o.y }
+    }
+    deleteElements(doc, [id])
+  } else {
+    deleteElements(doc, [id, ...doc.nodes.filter((n) => n.plate === id).map((n) => n.id)])
+  }
 }
 
 export function addEdge(doc: LalDocument, source: string, target: string): string {

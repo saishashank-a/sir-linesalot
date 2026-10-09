@@ -1,16 +1,11 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useRef, useSyncExternalStore } from 'react'
+import { useEffect, useRef } from 'react'
 import { labelOf } from '../edit/cards.ts'
 import { useStore } from '../store.ts'
+import { typingIn } from '../typing.ts'
+import { useNarrow } from '../useNarrow.ts'
 import { CardEditor } from './CardEditor.tsx'
 import { FieldValue } from './FieldValue.tsx'
-
-const narrowQuery = typeof matchMedia === 'undefined' ? null : matchMedia('(max-width: 640px)')
-const useNarrow = () =>
-  useSyncExternalStore(
-    (cb) => (narrowQuery?.addEventListener('change', cb), () => narrowQuery?.removeEventListener('change', cb)),
-    () => !!narrowQuery?.matches,
-  )
 
 export function CardPanel() {
   const doc = useStore((s) => s.doc)
@@ -27,7 +22,12 @@ export function CardPanel() {
     if (!open) return
     const opener = document.activeElement as HTMLElement | null
     ref.current?.focus()
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close()
+    // Esc in a field just leaves the field (what was typed is already saved); Esc elsewhere closes the card.
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      if (typingIn(e.target)) ref.current?.focus()
+      else close()
+    }
     window.addEventListener('keydown', onKey)
     return () => {
       window.removeEventListener('keydown', onKey)

@@ -4,7 +4,7 @@ import { readLal } from '../io/lal.ts'
 import { layoutDoc } from '../io/layout.ts'
 import type { LalDocument } from '../model/schema.ts'
 import { validateDoc } from '../model/validate.ts'
-import { absFrame, addEdge, addNode, addPlate, deleteElements, moveNode, movePlate } from './canvasActions.ts'
+import { absFrame, addEdge, addNode, addPlate, deleteElements, deletePlate, moveNode, movePlate, plateDeleteBlocker } from './canvasActions.ts'
 
 const base = layoutDoc(readLal(readFileSync('samples/request-flows.lal', 'utf8')).doc!)
 const doc = () => structuredClone(base)
@@ -84,4 +84,52 @@ it('a small move stays on the same plate; moving a plate keeps its frame where d
   movePlate(d, 'plate_fulfilment', { x: 5000, y: 100 })
   const f = absFrame(d, plateOf(d, 'plate_fulfilment'))
   expect([f.x, f.y]).toEqual([5000, 100])
+})
+
+it('deleting the detail plate removes its contents, the portal into it and cards on it', () => {
+  const d = doc()
+  expect(plateDeleteBlocker(d, 'plate_fulfilment')).toBeNull()
+  deletePlate(d, 'plate_fulfilment')
+  expect(ids(d.plates)).toEqual(['plate_overview'])
+  expect(d.nodes.some((n) => n.plate === 'plate_fulfilment')).toBe(false)
+  expect(ids(d.nodes)).not.toContain('n_pick')
+  expect(ids(d.edges)).not.toContain('e_pick_pack')
+  expect(ids(d.paths)).not.toContain('p_fulfil_steps')
+  expect(d.nodes.find((n) => n.id === 'n_fulfil')!.link).toBeUndefined()
+  expect(ids(d.cards)).not.toContain('c_plate_fulfil')
+  expect(ids(d.cards)).not.toContain('c_ship')
+  expect(ids(d.cards)).toContain('c_fulfil')
+  expect(validateDoc(d)).toEqual([])
+})
+
+it('the overview is blocked while other plates exist, and an unknown plate is refused', () => {
+  const d = doc()
+  expect(plateDeleteBlocker(d, 'plate_overview')).toMatch(/overview/)
+  expect(plateDeleteBlocker(d, 'nope')).toBeTruthy()
+})
+
+it('deleting the last plate leaves a plate-less doc with nodes at their absolute positions', () => {
+  const d = doc()
+  deletePlate(d, 'plate_fulfilment')
+  expect(plateDeleteBlocker(d, 'plate_overview')).toBeNull()
+  const o = plateOf(d, 'plate_overview').position ?? { x: 0, y: 0 }
+  const before = new Map(d.nodes.map((n) => [n.id, n.position!]))
+  deletePlate(d, 'plate_overview')
+  expect(d.plates).toBeUndefined()
+  expect(d.nodes).toHaveLength(before.size)
+  for (const n of d.nodes) {
+    expect(n.plate).toBeUndefined()
+    expect(n.position).toEqual({ x: before.get(n.id)!.x + o.x, y: before.get(n.id)!.y + o.y })
+  }
+  expect(validateDoc(d)).toEqual([])
+})
+
+it('child plates of a deleted plate move up to its parent', () => {
+  const d = doc()
+  const { plateId } = addPlate(d)
+  plateOf(d, plateId).parent = 'plate_fulfilment'
+  expect(validateDoc(d)).toEqual([])
+  deletePlate(d, 'plate_fulfilment')
+  expect(plateOf(d, plateId).parent).toBe('plate_overview')
+  expect(validateDoc(d)).toEqual([])
 })

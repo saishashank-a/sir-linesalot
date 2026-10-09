@@ -43,17 +43,34 @@
 .edit-palette button:disabled { opacity: 0.35; cursor: default; }
 .edit-palette .hint { padding: 0 8px; }
 
-/* Touch screens: 44px targets, bigger handles. */
+.edit-palette .edit-tools { display: contents; } /* its buttons wrap together with the palette's Done */
+.edit-palette .hint { flex-basis: 100%; text-align: center; font-size: 14px; color: var(--c-muted); }
+
+/* Plate selected by its title. */
+.sk-plate.selected .sk-plate-title { outline: 1.5px dashed var(--c-focus); outline-offset: 4px; border-radius: 6px; }
+.sk-plate-title .sk-rename { font-size: 20px; min-width: 200px; text-align: left; }
+
+/* Stop numbers on nodes while a path/line route is being picked. */
+.sk-stop {
+  position: absolute; top: -12px; right: -10px; min-width: 24px; height: 24px; padding: 0 6px; pointer-events: none;
+  display: flex; align-items: center; justify-content: center; font-size: 14px; border-radius: 12px;
+  background: var(--mark, var(--c-ink)); color: var(--c-paper); border: 1.5px solid var(--c-paper);
+}
+
+/* Touch screens: 44px targets, bigger handles, fatter edge hit areas. */
 @media (pointer: coarse) {
   .edit-tools button, .edit-tools select, .edit-palette button { min-height: 44px; min-width: 44px; }
   .sk-node.editing .sk-handle { width: 22px; height: 22px; }
+  .sk-edge-hit { stroke-width: 30; }
 }
 
-/* Phones: palette docked full width at the bottom; zoom buttons give way to pinch. */
+/* Phones: palette docked full width at the bottom, on top of the collapsed paths & lines
+   header (48px + border); zoom buttons give way to pinch. */
 @media (max-width: 640px) {
-  .react-flow__panel.edit-palette {
-    left: 0; right: 0; bottom: 0; margin: 0; transform: none; justify-content: center;
-    border-radius: 14px 14px 0 0; border-bottom: 0; padding: 8px 16px;
+  .react-flow__panel.bottom.center.edit-palette {
+    left: 0; right: 0; bottom: 49px; margin: 0; transform: none; justify-content: center;
+    border-radius: 14px 14px 0 0; border-bottom: 0; padding: 6px 8px;
   }
   .is-editing .react-flow__controls { display: none; }
+  .is-editing .react-flow__attribution { display: none; }
 }

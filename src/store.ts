@@ -36,6 +36,8 @@ interface State {
 
   // While set, tapping a node calls this instead of its normal action (path/line editors pick nodes this way).
   picker: ((nodeId: string) => void) | null
+  // The route being picked, so the canvas can number its stops (color is a CSS colour).
+  routeMarks: { nodes: string[]; color: string } | null
 
   loadText: (text: string, source?: { fileName?: string; fileHandle?: FileSystemFileHandle }) => Promise<void>
   openCard: (target: string) => void
@@ -49,6 +51,7 @@ interface State {
   redo: () => void
   markSaved: (source?: { fileName?: string; fileHandle?: FileSystemFileHandle | null }) => void
   setPicker: (picker: ((nodeId: string) => void) | null) => void
+  setRouteMarks: (marks: State['routeMarks']) => void
 }
 
 export const useStore = create<State>()((set, get) => ({
@@ -67,6 +70,7 @@ export const useStore = create<State>()((set, get) => ({
   fileName: null,
   fileHandle: null,
   picker: null,
+  routeMarks: null,
 
   async loadText(text, source) {
     const { doc, issues } = readLal(text)
@@ -90,6 +94,7 @@ export const useStore = create<State>()((set, get) => ({
       fileName: source?.fileName ?? null,
       fileHandle: source?.fileHandle ?? null,
       picker: null,
+      routeMarks: null,
     }))
   },
 
@@ -102,7 +107,7 @@ export const useStore = create<State>()((set, get) => ({
   toggleLine: (lineId) => set((s) => ({ highlightLineId: s.highlightLineId === lineId ? null : lineId })),
   setTheme: (theme) => set({ theme }),
   clearIssues: () => set({ issues: [] }),
-  setMode: (mode) => set({ mode, picker: null, lastCoalesce: null }),
+  setMode: (mode) => set({ mode, picker: null, routeMarks: null, lastCoalesce: null }),
 
   // The only way to change the document. Applies `recipe` to a copy, refuses the
   // change if the result breaks a rule (so the doc is always valid), and records undo.
@@ -143,4 +148,5 @@ export const useStore = create<State>()((set, get) => ({
       fileHandle: source?.fileHandle === undefined ? s.fileHandle : source.fileHandle,
     })),
   setPicker: (picker) => set({ picker }),
+  setRouteMarks: (routeMarks) => set({ routeMarks }),
 }))

@@ -1,8 +1,8 @@
 // Edit-mode drawer for Play paths and shared lines: create, rename, recolour,
 // delete, and edit a route by tapping nodes on the canvas in order.
 import { useEffect, useState } from 'react'
-import { lineColor } from '../canvas/adapter.ts'
-import { colorVar } from '../canvas/rough.ts'
+import { autoColor } from '../canvas/adapter.ts'
+import { typingIn } from '../typing.ts'
 import { newId } from '../edit/ids.ts'
 import { buildPathRoute, canAppend, routeProblems, type RouteKind } from '../edit/pathLine.ts'
 import { PALETTE, type LalDocument } from '../model/schema.ts'
@@ -65,7 +65,7 @@ export function PathLineEditor() {
           {!rows.length && <p className="ple-empty">No paths or lines yet.</p>}
           <ul>
             {rows.map(({ kind, item }) => {
-              const swatch = kind === 'line' ? lineColor(doc, doc.lines!.find((l) => l.id === item.id)!) : colorVar(item.color, 'var(--c-gray)')
+              const swatch = autoColor(item.color, listOf(doc, kind).indexOf(item))
               const isOpen = expanded === item.id
               return (
                 <li key={item.id}>
@@ -150,6 +150,13 @@ function RouteEditor({ doc, draft, setDraft, message, setMessage, onClose }: {
   })
   useEffect(() => () => useStore.getState().setPicker(null), [])
 
+  // Number the picked stops on the canvas, in the colour the route will have.
+  const list = listOf(doc, kind)
+  const index = draft.id ? list.findIndex((x) => x.id === draft.id) : list.length
+  const color = autoColor(draft.color, index)
+  useEffect(() => useStore.getState().setRouteMarks({ nodes: route, color }), [route, color])
+  useEffect(() => () => useStore.getState().setRouteMarks(null), [])
+
   // Highlight the line being edited, then put back whatever was highlighted before.
   useEffect(() => {
     if (kind !== 'line' || !draft.id) return
@@ -159,7 +166,12 @@ function RouteEditor({ doc, draft, setDraft, message, setMessage, onClose }: {
   }, [kind, draft.id])
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    // Esc in a field (the name) just leaves the field; Esc elsewhere closes the route editor.
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      if (typingIn(e.target)) (e.target as HTMLElement).blur()
+      else onClose()
+    }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
