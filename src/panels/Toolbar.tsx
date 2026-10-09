@@ -3,7 +3,8 @@ import { FileMenu } from './FileMenu.tsx'
 
 const NEXT_THEME: Record<Theme, Theme> = { auto: 'light', light: 'dark', dark: 'auto' }
 const THEME_ICON: Record<Theme, string> = { auto: '◐', light: '☀', dark: '☾' }
-const MODES: Mode[] = ['view', 'edit']
+const MODES: Mode[] = ['view', 'edit', 'play']
+const MODE_LABEL: Record<Mode, string> = { view: 'View', edit: 'Edit', play: 'Play' }
 
 export function Toolbar() {
   const title = useStore((s) => s.doc?.title)
@@ -22,7 +23,7 @@ export function Toolbar() {
       <div className="segmented" role="group" aria-label="Mode">
         {MODES.map((m) => (
           <button key={m} type="button" aria-pressed={mode === m} onClick={() => setMode(m)}>
-            {m === 'view' ? 'View' : 'Edit'}
+            {MODE_LABEL[m]}
           </button>
         ))}
       </div>
