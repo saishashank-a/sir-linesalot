@@ -1,0 +1,59 @@
+/* Edit-mode canvas styles (kept out of theme.css so parallel branches don't collide). */
+
+/* Handles: visible and grabbable only while editing. */
+.sk-node.editing .sk-handle {
+  opacity: 1; pointer-events: all; width: 10px; height: 10px;
+  background: var(--c-paper); border: 1.5px solid var(--c-ink);
+}
+.sk-node.note .sk-handle { display: none; }
+
+/* Selection and pending-connect outlines. */
+.sk-node.selected::after, .sk-node.connect-from::after {
+  content: ''; position: absolute; inset: -7px; pointer-events: none;
+  border: 1.5px dashed var(--c-focus); border-radius: 10px 14px 12px 9px / 12px 9px 14px 10px;
+}
+.sk-node.connect-from::after { border-style: solid; border-width: 2.5px; }
+.sk-edge.selected path:not(.sk-edge-hit) { stroke: var(--c-focus); }
+.is-editing .sk-node .sk-label { cursor: grab; }
+
+/* Plates drag by their title only, so empty plate area still pans the canvas. */
+.react-flow__node-plate { pointer-events: none !important; }
+.is-editing .sk-plate-title { cursor: grab; }
+
+/* Inline label input */
+.sk-rename {
+  width: 100%; min-width: 80px; font: inherit; font-size: 18px; text-align: center; color: var(--c-ink);
+  background: var(--c-surface); border: 1.5px solid var(--c-focus); border-radius: 6px; padding: 2px 6px;
+}
+
+/* Toolbars and palette */
+.edit-tools, .edit-palette {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 4px;
+  background: var(--c-surface); border: 1.5px solid var(--c-ink); border-radius: 12px 10px 14px 9px / 10px 14px 9px 12px;
+  font-family: var(--font); font-size: 15px;
+}
+.edit-tools { max-width: min(92vw, 520px); }
+.edge-tools-anchor { position: absolute; pointer-events: all; }
+.edit-tools button, .edit-tools select, .edit-palette button {
+  min-height: 32px; padding: 2px 10px; font: inherit; color: var(--c-ink); cursor: pointer;
+  background: var(--c-paper); border: 1.5px solid var(--c-grid); border-radius: 8px;
+}
+.edit-tools button[aria-pressed='true'] { background: var(--c-ink); color: var(--c-paper); }
+.edit-tools .danger, .edit-palette .danger { color: var(--c-red); }
+.edit-palette button:disabled { opacity: 0.35; cursor: default; }
+.edit-palette .hint { padding: 0 8px; }
+
+/* Touch screens: 44px targets, bigger handles. */
+@media (pointer: coarse) {
+  .edit-tools button, .edit-tools select, .edit-palette button { min-height: 44px; min-width: 44px; }
+  .sk-node.editing .sk-handle { width: 22px; height: 22px; }
+}
+
+/* Phones: palette docked full width at the bottom; zoom buttons give way to pinch. */
+@media (max-width: 640px) {
+  .react-flow__panel.edit-palette {
+    left: 0; right: 0; bottom: 0; margin: 0; transform: none; justify-content: center;
+    border-radius: 14px 14px 0 0; border-bottom: 0; padding: 8px 16px;
+  }
+  .is-editing .react-flow__controls { display: none; }
+}
