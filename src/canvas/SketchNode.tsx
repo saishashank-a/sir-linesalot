@@ -8,6 +8,8 @@ import { RoughPaths } from './RoughPaths.tsx'
 export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowNode>) {
   const { node, size, hasCard, dim, halo } = data
   const openCard = useStore((s) => s.openCard)
+  const picker = useStore((s) => s.picker)
+  const editing = useStore((s) => s.mode === 'edit')
   const note = node.kind === 'note'
   const shape = note ? 'rectangle' : (node.shape ?? 'rectangle')
   const style = useMemo(
@@ -26,7 +28,8 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
   }, [node.id, node.link, shape, w, h, style])
 
   const colors = { S: colorVar(style?.stroke, 'var(--c-ink)'), F: colorVar(style?.fill, 'var(--c-ink)'), P: 'var(--c-paper)' }
-  const Label = hasCard ? 'button' : 'div'
+  const tappable = hasCard || editing || !!picker
+  const Label = tappable ? 'button' : 'div'
 
   return (
     <div
@@ -38,8 +41,12 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
         {node.link && <PortalGlyph x={w - 22} y={h - 20} />}
       </svg>
       <Label
-        className={`sk-label${hasCard ? ' has-card' : ''}`}
-        {...(hasCard && { type: 'button', onClick: () => openCard(node.id), 'aria-label': `${node.label}, open card` })}
+        className={`sk-label${tappable ? ' has-card' : ''}`}
+        {...(tappable && {
+          type: 'button',
+          onClick: () => (picker ? picker(node.id) : openCard(node.id)),
+          'aria-label': picker ? `Pick ${node.label}` : `${node.label}, ${editing ? 'edit card' : 'open card'}`,
+        })}
       >
         {node.label}
       </Label>

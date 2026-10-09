@@ -168,3 +168,8 @@ button.icon { min-width: 36px; padding: 4px 8px; }
 }
 .issues ul { margin: 8px 0 12px; padding-left: 20px; font-size: 15px; }
 .issues code { font-size: 13px; }
+
+/* Mode switch and disabled buttons */
+.segmented { display: inline-flex; gap: 4px; }
+.toolbar .segmented button[aria-pressed='true'] { background: var(--c-ink); color: var(--c-paper); }
+.toolbar button:disabled { opacity: 0.35; cursor: default; }

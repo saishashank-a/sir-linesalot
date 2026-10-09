@@ -3,6 +3,7 @@ import { useEffect, useRef, useSyncExternalStore } from 'react'
 import Markdown from 'react-markdown'
 import type { LalCardField, LalDocument } from '../model/schema.ts'
 import { useStore } from '../store.ts'
+import { CardEditor } from './CardEditor.tsx'
 
 const narrowQuery = typeof matchMedia === 'undefined' ? null : matchMedia('(max-width: 640px)')
 const useNarrow = () =>
@@ -15,13 +16,15 @@ export function CardPanel() {
   const doc = useStore((s) => s.doc)
   const target = useStore((s) => s.openCardTarget)
   const close = useStore((s) => s.closeCard)
+  const editing = useStore((s) => s.mode === 'edit')
   const card = doc?.cards?.find((c) => c.target === target)
+  const open = !!target && (!!card || editing) // edit mode can open a card that doesn't exist yet
   const narrow = useNarrow()
   const ref = useRef<HTMLElement>(null)
 
   // Move focus into the card, and back to whatever opened it on close.
   useEffect(() => {
-    if (!card) return
+    if (!open) return
     const opener = document.activeElement as HTMLElement | null
     ref.current?.focus()
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close()
@@ -30,14 +33,14 @@ export function CardPanel() {
       window.removeEventListener('keydown', onKey)
       opener?.focus?.()
     }
-  }, [card, close])
+  }, [open, target, close])
 
   const off = narrow ? { y: '100%' } : { x: '100%' }
   return (
     <AnimatePresence>
-      {card && doc && (
+      {open && doc && (
         <motion.aside
-          key={card.id}
+          key={target}
           ref={ref}
           tabIndex={-1}
           aria-labelledby="card-title"
@@ -48,17 +51,21 @@ export function CardPanel() {
           transition={{ type: 'spring', damping: 32, stiffness: 320 }}
         >
           <header>
-            <h2 id="card-title">{card.title ?? labelOf(doc, card.target)}</h2>
+            <h2 id="card-title">{card?.title ?? labelOf(doc, target)}</h2>
             <button type="button" className="icon" onClick={close} aria-label="Close card">✕</button>
           </header>
+          {editing ? (
+            <CardEditor target={target} />
+          ) : (
           <dl>
-            {card.fields.map((f, i) => (
+            {card!.fields.map((f, i) => (
               <div key={i}>
                 <dt>{f.label}</dt>
                 <dd><FieldValue field={f} /></dd>
               </div>
             ))}
           </dl>
+          )}
         </motion.aside>
       )}
     </AnimatePresence>
