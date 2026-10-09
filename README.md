@@ -6,7 +6,7 @@ An interactive, hand-drawn style diagram canvas: sketchy nodes you can tap to op
 
 ## Status
 
-Planning. See [PLAN.md](PLAN.md) once it lands.
+Planning approved. See [PLAN.md](PLAN.md).
 
 ## License
 

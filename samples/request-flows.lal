@@ -1,0 +1,109 @@
+{
+  "$schema": "../schema/lal.schema.json",
+  "format": "lal",
+  "version": 1,
+  "id": "doc_request_flows",
+  "title": "Purchase request flows",
+  "theme": "auto",
+  "meta": { "author": "Sai Shashank Anchuri", "fixture": true },
+
+  "plates": [
+    { "id": "plate_overview", "title": "Request lifecycle", "kind": "overview" },
+    {
+      "id": "plate_fulfilment",
+      "title": "Fulfilment detail",
+      "kind": "detail",
+      "parent": "plate_overview",
+      "layout": { "direction": "RIGHT", "spacing": 60 },
+      "meta": { "note": "No positions on this plate on purpose: exercises elk auto-layout." }
+    }
+  ],
+
+  "nodes": [
+    { "id": "n_submit",  "label": "Request submitted", "shape": "pill",      "plate": "plate_overview", "position": { "x": 0,    "y": 200 } },
+    { "id": "n_route",   "label": "Route request",     "shape": "diamond",   "plate": "plate_overview", "position": { "x": 220,  "y": 188 } },
+    { "id": "n_manager", "label": "Manager review",    "shape": "rectangle", "plate": "plate_overview", "position": { "x": 460,  "y": 60  },
+      "meta": { "owner": "Line manager", "slaHours": 24 } },
+    { "id": "n_finance", "label": "Finance sign-off",  "shape": "rectangle", "plate": "plate_overview", "position": { "x": 700,  "y": 60  },
+      "meta": { "owner": "Finance", "slaHours": 48 } },
+    { "id": "n_policy",  "label": "Policy check",      "shape": "rectangle", "plate": "plate_overview", "position": { "x": 460,  "y": 340 } },
+    { "id": "n_self",    "label": "Self-approve",      "shape": "rectangle", "plate": "plate_overview", "position": { "x": 700,  "y": 340 } },
+    { "id": "n_fulfil",  "label": "Fulfilment",        "shape": "rectangle", "plate": "plate_overview", "position": { "x": 940,  "y": 200 },
+      "style": { "fill": "yellow", "fillStyle": "hachure" },
+      "link": { "plate": "plate_fulfilment" },
+      "meta": { "sharedStage": true } },
+    { "id": "n_close",   "label": "Closed",            "shape": "pill",      "plate": "plate_overview", "position": { "x": 1180, "y": 200 } },
+    { "id": "n_note",    "label": "Threshold is $500 as of FY26", "kind": "note", "plate": "plate_overview", "position": { "x": 220, "y": 440 } },
+
+    { "id": "n_pick",    "label": "Pick items",        "plate": "plate_fulfilment" },
+    { "id": "n_pack",    "label": "Pack & label",      "plate": "plate_fulfilment" },
+    { "id": "n_ship",    "label": "Hand to courier",   "plate": "plate_fulfilment" },
+    { "id": "n_confirm", "label": "Confirm delivery",  "shape": "pill", "plate": "plate_fulfilment" }
+  ],
+
+  "edges": [
+    { "id": "e_submit_route",   "source": "n_submit",  "target": "n_route" },
+    { "id": "e_route_manager",  "source": "n_route",   "target": "n_manager", "label": "over $500" },
+    { "id": "e_manager_finance","source": "n_manager", "target": "n_finance" },
+    { "id": "e_finance_fulfil", "source": "n_finance", "target": "n_fulfil" },
+    { "id": "e_route_policy",   "source": "n_route",   "target": "n_policy",  "label": "$500 or less" },
+    { "id": "e_policy_self",    "source": "n_policy",  "target": "n_self" },
+    { "id": "e_self_fulfil",    "source": "n_self",    "target": "n_fulfil" },
+    { "id": "e_route_fulfil",   "source": "n_route",   "target": "n_fulfil",  "label": "pre-approved vendor", "style": { "dashed": true } },
+    { "id": "e_fulfil_close",   "source": "n_fulfil",  "target": "n_close" },
+
+    { "id": "e_pick_pack",      "source": "n_pick",    "target": "n_pack" },
+    { "id": "e_pack_ship",      "source": "n_pack",    "target": "n_ship" },
+    { "id": "e_ship_confirm",   "source": "n_ship",    "target": "n_confirm" }
+  ],
+
+  "paths": [
+    { "id": "p_approval", "name": "Approval flow",      "color": "blue",
+      "nodes": ["n_submit", "n_route", "n_manager", "n_finance", "n_fulfil", "n_close"] },
+    { "id": "p_self",     "name": "Self-approval flow", "color": "green",
+      "nodes": ["n_submit", "n_route", "n_policy", "n_self", "n_fulfil", "n_close"] },
+    { "id": "p_direct",   "name": "Direct flow",        "color": "orange",
+      "nodes": ["n_submit", "n_route", "n_fulfil", "n_close"],
+      "edges": ["e_submit_route", "e_route_fulfil", "e_fulfil_close"],
+      "meta": { "comment": "edges[] is optional; given here to show explicit disambiguation." } },
+    { "id": "p_fulfil_steps", "name": "Fulfilment steps", "color": "violet",
+      "nodes": ["n_pick", "n_pack", "n_ship", "n_confirm"] }
+  ],
+
+  "lines": [
+    { "id": "l_audit",  "name": "Audit trail",   "color": "red",
+      "nodes": ["n_submit", "n_manager", "n_self", "n_fulfil", "n_close"],
+      "meta": { "system": "audit-log" } },
+    { "id": "l_notify", "name": "Notifications", "color": "teal",
+      "nodes": ["n_submit", "n_finance", "n_fulfil"] }
+  ],
+
+  "cards": [
+    { "id": "c_submit", "target": "n_submit", "title": "Request submitted",
+      "fields": [
+        { "label": "What", "value": "Employee raises a purchase request with **amount**, vendor and justification." },
+        { "label": "Form", "value": "https://example.com/forms/purchase", "format": "url" }
+      ] },
+    { "id": "c_manager", "target": "n_manager", "title": "Manager review",
+      "fields": [
+        { "label": "Checks", "value": "- Budget available\n- Business justification\n- Vendor on approved list" },
+        { "label": "SLA", "value": "24 hours", "format": "plain" }
+      ] },
+    { "id": "c_policy", "target": "n_policy", "title": "Policy check",
+      "fields": [ { "label": "Rule", "value": "Auto-check against the self-approval policy. Fails over to manager review." } ] },
+    { "id": "c_self", "target": "n_self", "title": "Self-approve",
+      "fields": [ { "label": "Who", "value": "Requester confirms; recorded in the *audit trail*." } ] },
+    { "id": "c_fulfil", "target": "n_fulfil", "title": "Fulfilment (shared stage)",
+      "fields": [
+        { "label": "Why shared", "value": "All three flows converge here. Tap **Open plate** to zoom into the detail." }
+      ] },
+    { "id": "c_ship", "target": "n_ship", "title": "Hand to courier",
+      "fields": [ { "label": "Carrier", "value": "Default: ground. Express needs finance sign-off.", "format": "plain" } ] },
+    { "id": "c_route_fulfil", "target": "e_route_fulfil", "title": "Pre-approved vendor shortcut",
+      "fields": [ { "label": "Condition", "value": "Vendor is on the **pre-approved** list and amount is under contract cap." } ] },
+    { "id": "c_audit", "target": "l_audit", "title": "Audit trail",
+      "fields": [ { "label": "Retention", "value": "7 years", "format": "plain" } ] },
+    { "id": "c_plate_fulfil", "target": "plate_fulfilment", "title": "Fulfilment detail",
+      "fields": [ { "label": "Owner", "value": "Warehouse ops" } ] }
+  ]
+}
