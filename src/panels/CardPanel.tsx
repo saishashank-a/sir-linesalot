@@ -1,9 +1,9 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, useSyncExternalStore } from 'react'
-import Markdown from 'react-markdown'
-import type { LalCardField, LalDocument } from '../model/schema.ts'
+import { labelOf } from '../edit/cards.ts'
 import { useStore } from '../store.ts'
 import { CardEditor } from './CardEditor.tsx'
+import { FieldValue } from './FieldValue.tsx'
 
 const narrowQuery = typeof matchMedia === 'undefined' ? null : matchMedia('(max-width: 640px)')
 const useNarrow = () =>
@@ -44,7 +44,7 @@ export function CardPanel() {
           ref={ref}
           tabIndex={-1}
           aria-labelledby="card-title"
-          className={`card ${narrow ? 'sheet' : 'side'}`}
+          className={`card ${narrow ? 'sheet' : 'side'}${editing ? ' editing' : ''}`}
           initial={{ ...off, opacity: 0 }}
           animate={{ x: 0, y: 0, opacity: 1 }}
           exit={{ ...off, opacity: 0 }}
@@ -57,46 +57,17 @@ export function CardPanel() {
           {editing ? (
             <CardEditor target={target} />
           ) : (
-          <dl>
-            {card!.fields.map((f, i) => (
-              <div key={i}>
-                <dt>{f.label}</dt>
-                <dd><FieldValue field={f} /></dd>
-              </div>
-            ))}
-          </dl>
+            <dl>
+              {card!.fields.map((f, i) => (
+                <div key={i}>
+                  <dt>{f.label}</dt>
+                  <dd><FieldValue field={f} /></dd>
+                </div>
+              ))}
+            </dl>
           )}
         </motion.aside>
       )}
     </AnimatePresence>
-  )
-}
-
-function labelOf(doc: LalDocument, id: string) {
-  const n = doc.nodes.find((x) => x.id === id)
-  if (n) return n.label
-  const e = doc.edges.find((x) => x.id === id)
-  if (e) return e.label ?? `${e.source} → ${e.target}`
-  return doc.lines?.find((x) => x.id === id)?.name ?? doc.plates?.find((x) => x.id === id)?.title ?? id
-}
-
-// Card content comes from untrusted documents: no raw HTML, no images (no remote
-// fetches), and only http(s)/mailto links.
-const safeUrl = (u: string) => (/^(https?:|mailto:)/i.test(u.trim()) ? u.trim() : '')
-
-function ExternalLink({ href, children }: { href?: string; children?: React.ReactNode }) {
-  return href ? <a href={href} target="_blank" rel="noopener noreferrer">{children}</a> : <span>{children}</span>
-}
-
-function FieldValue({ field }: { field: LalCardField }) {
-  if (field.format === 'plain') return <p className="plain">{field.value}</p>
-  if (field.format === 'url') {
-    const href = safeUrl(field.value)
-    return <ExternalLink href={href || undefined}>{field.value}</ExternalLink>
-  }
-  return (
-    <Markdown urlTransform={safeUrl} disallowedElements={['img']} unwrapDisallowed components={{ a: ExternalLink }}>
-      {field.value}
-    </Markdown>
   )
 }
