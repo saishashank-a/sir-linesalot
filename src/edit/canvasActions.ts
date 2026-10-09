@@ -1,6 +1,6 @@
 // Pure document edits behind the canvas editor. Each mutates a draft, for use
 // inside useStore.getState().edit(...), which validates the result.
-import { nodeSize, plateFrame } from '../io/layout.ts'
+import { layoutDoc, nodeSize, plateFrame } from '../io/layout.ts'
 import { overviewPlate as overview, resolvePath } from '../model/resolve.ts'
 import type { LalDocument, LalPlate } from '../model/schema.ts'
 import { allIds, newId } from './ids.ts'
@@ -148,4 +148,10 @@ export function movePlate(doc: LalDocument, id: string, abs: Point) {
   if (!p) return
   const f = plateFrame(doc, id)
   p.position = { x: Math.round(abs.x - f.x), y: Math.round(abs.y - f.y) }
+}
+
+// Re-runs auto-layout on one plate: drop its node positions and let dagre place them again.
+export function tidyPlate(doc: LalDocument, plateId: string) {
+  for (const n of doc.nodes) if (n.plate === plateId) delete n.position
+  doc.nodes = layoutDoc(doc).nodes
 }

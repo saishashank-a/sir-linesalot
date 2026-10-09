@@ -3,6 +3,7 @@ import { memo, useMemo, useRef, type CSSProperties } from 'react'
 import { useNarrow } from '../useNarrow.ts'
 import { useStore } from '../store.ts'
 import type { StepFlowNode } from './adapter.ts'
+import { flyToPlate } from './camera.ts'
 import { tapNode, useEditState } from './editState.ts'
 import { LabelInput, NodeTools } from './EditTools.tsx'
 import { colorVar, gen, roughOptions, seedFromId, shapeDrawable } from './rough.ts'
@@ -41,7 +42,14 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
   }, [node.id, node.link, shape, w, h, style])
 
   const colors = { S: colorVar(style?.stroke, 'var(--c-ink)'), F: colorVar(style?.fill, 'var(--c-ink)'), P: 'var(--c-paper)' }
-  const tappable = hasCard || editing || !!picker
+  const tappable = hasCard || editing || !!picker || !!node.link
+  // A portal flies to its plate; wide screens also open its card beside it (on phones the
+  // bottom sheet would cover the plate you just flew to).
+  const activate = () => {
+    if (!node.link) return openCard(node.id)
+    flyToPlate(node.link.plate)
+    if (!narrow) openCard(node.id)
+  }
   const Label = tappable ? 'button' : 'div'
 
   return (
@@ -63,9 +71,9 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
           {...(tappable && {
             type: 'button',
             // Picker first (path/line editors), then edit-mode select/connect, then the card.
-            onClick: () => (picker ? picker(node.id) : editing ? tapNode(node.id) : openCard(node.id)),
+            onClick: () => (picker ? picker(node.id) : editing ? tapNode(node.id) : activate()),
             onDoubleClick: () => editing && !picker && useEditState.getState().setRenaming(node.id),
-            'aria-label': picker ? `Pick ${node.label}` : `${node.label}, ${editing ? 'select' : 'open card'}`,
+            'aria-label': picker ? `Pick ${node.label}` : `${node.label}, ${editing ? 'select' : node.link ? 'open plate' : 'open card'}`,
             ...(editing && press),
           })}
         >

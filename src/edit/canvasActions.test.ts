@@ -4,7 +4,7 @@ import { readLal } from '../io/lal.ts'
 import { layoutDoc } from '../io/layout.ts'
 import type { LalDocument } from '../model/schema.ts'
 import { validateDoc } from '../model/validate.ts'
-import { absFrame, addEdge, addNode, addPlate, deleteElements, deletePlate, moveNode, movePlate, plateDeleteBlocker } from './canvasActions.ts'
+import { absFrame, addEdge, addNode, addPlate, deleteElements, deletePlate, moveNode, movePlate, plateDeleteBlocker, tidyPlate } from './canvasActions.ts'
 
 const base = layoutDoc(readLal(readFileSync('samples/request-flows.lal', 'utf8')).doc!)
 const doc = () => structuredClone(base)
@@ -131,5 +131,16 @@ it('child plates of a deleted plate move up to its parent', () => {
   expect(validateDoc(d)).toEqual([])
   deletePlate(d, 'plate_fulfilment')
   expect(plateOf(d, plateId).parent).toBe('plate_overview')
+  expect(validateDoc(d)).toEqual([])
+})
+
+it('tidies one plate with auto-layout and leaves the others alone', () => {
+  const d = doc()
+  const pick = d.nodes.find((n) => n.id === 'n_pick')!
+  const before = structuredClone(d.nodes.filter((n) => n.plate === 'plate_overview'))
+  pick.position = { x: 900, y: 900 }
+  tidyPlate(d, 'plate_fulfilment')
+  expect(d.nodes.find((n) => n.id === 'n_pick')!.position).not.toEqual({ x: 900, y: 900 })
+  expect(d.nodes.filter((n) => n.plate === 'plate_overview')).toEqual(before)
   expect(validateDoc(d)).toEqual([])
 })
