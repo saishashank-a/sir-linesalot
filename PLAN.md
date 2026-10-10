@@ -1,4 +1,4 @@
-# Sir Lines-a-Lot: Plan
+# Sir Linesalot: Plan
 
 > *Knighting your diagrams.*
 
@@ -154,8 +154,8 @@ Generated from the zod schema by `npm run schema` and committed at `schema/lal.s
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:sir-lines-a-lot:lal:1",
-  "title": "Sir Lines-a-Lot document (.lal), version 1",
+  "$id": "urn:sir-linesalot:lal:1",
+  "title": "Sir Linesalot document (.lal), version 1",
   "type": "object",
   "required": ["format", "version", "id", "title", "nodes", "edges"],
   "additionalProperties": false,
@@ -364,7 +364,7 @@ One source of truth: the `LalDocument` in the store. React Flow nodes/edges are 
 ### Folder structure
 
 ```
-sir-lines-a-lot/
+sir-linesalot/
 ├─ schema/lal.schema.json        # generated from zod, committed
 ├─ samples/request-flows.lal     # fixture
 ├─ scripts/gen-schema.ts         # zod -> JSON Schema

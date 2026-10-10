@@ -12,7 +12,7 @@ interface FsaWindow {
 // Chromium only, on drop items.
 type DropHandleItem = { getAsFileSystemHandle?: () => Promise<FileSystemHandle | null> }
 const fsa = () => window as unknown as FsaWindow
-const LAL_TYPES: PickerType[] = [{ description: 'Sir Lines-a-Lot document', accept: { 'application/json': ['.lal'] } }]
+const LAL_TYPES: PickerType[] = [{ description: 'Sir Linesalot document', accept: { 'application/json': ['.lal'] } }]
 
 export function slug(title: string): string {
   const s = title.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')

@@ -20,7 +20,7 @@ export function formatPath(segments: readonly PropertyKey[]): string {
 export function parseLal(input: unknown): { doc?: LalDocument; issues: Issue[] } {
   const version = (input as { version?: unknown } | null)?.version
   if (typeof version === 'number' && version !== SUPPORTED_VERSION) {
-    const hint = version > SUPPORTED_VERSION ? 'it was made by a newer Sir Lines-a-Lot' : 'no migration exists for it'
+    const hint = version > SUPPORTED_VERSION ? 'it was made by a newer Sir Linesalot' : 'no migration exists for it'
     return { issues: [{ path: 'version', message: `unsupported version ${version} (${hint}); this app reads version ${SUPPORTED_VERSION}` }] }
   }
 

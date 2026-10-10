@@ -1,0 +1,1429 @@
+{
+  "format": "lal",
+  "version": 1,
+  "id": "doc_sir_linesalot_architecture",
+  "title": "Sir Linesalot architecture",
+  "theme": "auto",
+  "layout": {
+    "direction": "DOWN"
+  },
+  "nodes": [
+    {
+      "id": "n_user",
+      "label": "User",
+      "shape": "pill",
+      "style": {
+        "fill": "teal"
+      }
+    },
+    {
+      "id": "n_lalfile",
+      "label": ".lal file",
+      "shape": "ellipse",
+      "style": {
+        "fill": "teal"
+      }
+    },
+    {
+      "id": "n_app",
+      "label": "App shell",
+      "shape": "rectangle",
+      "style": {
+        "fill": "blue"
+      }
+    },
+    {
+      "id": "n_toolbar",
+      "label": "Toolbar & file menu",
+      "shape": "rectangle",
+      "style": {
+        "fill": "blue"
+      }
+    },
+    {
+      "id": "n_cards",
+      "label": "Card panel & editor",
+      "shape": "rectangle",
+      "style": {
+        "fill": "blue"
+      }
+    },
+    {
+      "id": "n_pathed",
+      "label": "Path & line editor",
+      "shape": "rectangle",
+      "style": {
+        "fill": "blue"
+      }
+    },
+    {
+      "id": "n_store",
+      "label": "Store",
+      "shape": "rectangle",
+      "style": {
+        "fill": "violet"
+      }
+    },
+    {
+      "id": "n_canvas",
+      "label": "Canvas",
+      "shape": "rectangle",
+      "style": {
+        "fill": "yellow"
+      }
+    },
+    {
+      "id": "n_adapter",
+      "label": "Doc-to-flow adapter",
+      "shape": "rectangle",
+      "style": {
+        "fill": "yellow"
+      }
+    },
+    {
+      "id": "n_sketch",
+      "label": "Sketch nodes & edges",
+      "shape": "rectangle",
+      "style": {
+        "fill": "yellow"
+      }
+    },
+    {
+      "id": "n_rough",
+      "label": "Rough renderer",
+      "shape": "rectangle",
+      "style": {
+        "fill": "yellow"
+      }
+    },
+    {
+      "id": "n_actions",
+      "label": "Canvas actions",
+      "shape": "rectangle",
+      "style": {
+        "fill": "green"
+      }
+    },
+    {
+      "id": "n_cardops",
+      "label": "Card field ops",
+      "shape": "rectangle",
+      "style": {
+        "fill": "green"
+      }
+    },
+    {
+      "id": "n_pathops",
+      "label": "Path routing",
+      "shape": "rectangle",
+      "style": {
+        "fill": "green"
+      }
+    },
+    {
+      "id": "n_files",
+      "label": "Open & save",
+      "shape": "rectangle",
+      "style": {
+        "fill": "pink"
+      }
+    },
+    {
+      "id": "n_lalio",
+      "label": "Parse & serialise",
+      "shape": "rectangle",
+      "style": {
+        "fill": "pink"
+      }
+    },
+    {
+      "id": "n_layout",
+      "label": "Auto-layout",
+      "shape": "rectangle",
+      "style": {
+        "fill": "pink"
+      }
+    },
+    {
+      "id": "n_schema",
+      "label": "zod schema",
+      "shape": "rectangle",
+      "style": {
+        "fill": "violet"
+      }
+    },
+    {
+      "id": "n_validate",
+      "label": "Semantic validation",
+      "shape": "rectangle",
+      "style": {
+        "fill": "violet"
+      }
+    },
+    {
+      "id": "n_legend",
+      "label": "Lines legend",
+      "shape": "rectangle",
+      "style": {
+        "fill": "blue"
+      }
+    },
+    {
+      "id": "n_edittools",
+      "label": "Edit tools & dock",
+      "shape": "rectangle",
+      "style": {
+        "fill": "yellow"
+      }
+    },
+    {
+      "id": "n_editstate",
+      "label": "Selection state",
+      "shape": "rectangle",
+      "style": {
+        "fill": "green"
+      }
+    },
+    {
+      "id": "n_play",
+      "label": "Play controller",
+      "shape": "rectangle",
+      "style": {
+        "fill": "orange"
+      }
+    },
+    {
+      "id": "n_playbar",
+      "label": "Play bar",
+      "shape": "rectangle",
+      "style": {
+        "fill": "orange"
+      }
+    },
+    {
+      "id": "n_token",
+      "label": "Play token",
+      "shape": "rectangle",
+      "style": {
+        "fill": "orange"
+      }
+    },
+    {
+      "id": "n_camera",
+      "label": "Camera fly-to",
+      "shape": "rectangle",
+      "style": {
+        "fill": "orange"
+      }
+    },
+    {
+      "id": "n_crumbs",
+      "label": "Plate breadcrumbs",
+      "shape": "rectangle",
+      "style": {
+        "fill": "blue"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_0",
+      "source": "n_user",
+      "target": "n_app",
+      "label": "uses",
+      "style": {
+        "dashed": true
+      }
+    },
+    {
+      "id": "e_1",
+      "source": "n_app",
+      "target": "n_canvas",
+      "label": "renders"
+    },
+    {
+      "id": "e_2",
+      "source": "n_app",
+      "target": "n_toolbar",
+      "label": "renders"
+    },
+    {
+      "id": "e_3",
+      "source": "n_app",
+      "target": "n_cards",
+      "label": "renders"
+    },
+    {
+      "id": "e_4",
+      "source": "n_app",
+      "target": "n_pathed",
+      "label": "renders"
+    },
+    {
+      "id": "e_5",
+      "source": "n_toolbar",
+      "target": "n_files",
+      "label": "open/save"
+    },
+    {
+      "id": "e_6",
+      "source": "n_canvas",
+      "target": "n_adapter",
+      "label": "converts doc"
+    },
+    {
+      "id": "e_7",
+      "source": "n_canvas",
+      "target": "n_actions",
+      "label": "applies edits"
+    },
+    {
+      "id": "e_8",
+      "source": "n_canvas",
+      "target": "n_sketch",
+      "label": "draws"
+    },
+    {
+      "id": "e_9",
+      "source": "n_sketch",
+      "target": "n_rough",
+      "label": "strokes"
+    },
+    {
+      "id": "e_10",
+      "source": "n_adapter",
+      "target": "n_layout",
+      "label": "positions"
+    },
+    {
+      "id": "e_11",
+      "source": "n_cards",
+      "target": "n_cardops",
+      "label": "edits fields"
+    },
+    {
+      "id": "e_12",
+      "source": "n_pathed",
+      "target": "n_pathops",
+      "label": "checks route"
+    },
+    {
+      "id": "e_13",
+      "source": "n_cards",
+      "target": "n_store",
+      "label": "updates"
+    },
+    {
+      "id": "e_14",
+      "source": "n_canvas",
+      "target": "n_store",
+      "label": "reads/writes"
+    },
+    {
+      "id": "e_15",
+      "source": "n_files",
+      "target": "n_lalio",
+      "label": "parses"
+    },
+    {
+      "id": "e_16",
+      "source": "n_files",
+      "target": "n_lalfile",
+      "label": "reads/writes"
+    },
+    {
+      "id": "e_17",
+      "source": "n_store",
+      "target": "n_lalio",
+      "label": "loads"
+    },
+    {
+      "id": "e_18",
+      "source": "n_lalio",
+      "target": "n_validate",
+      "label": "validates"
+    },
+    {
+      "id": "e_19",
+      "source": "n_validate",
+      "target": "n_schema",
+      "label": "checks against"
+    },
+    {
+      "id": "e_20",
+      "source": "n_app",
+      "target": "n_legend",
+      "label": "renders"
+    },
+    {
+      "id": "e_21",
+      "source": "n_legend",
+      "target": "n_store",
+      "label": "highlights line"
+    },
+    {
+      "id": "e_22",
+      "source": "n_canvas",
+      "target": "n_edittools",
+      "label": "shows"
+    },
+    {
+      "id": "e_23",
+      "source": "n_canvas",
+      "target": "n_editstate",
+      "label": "tracks selection"
+    },
+    {
+      "id": "e_24",
+      "source": "n_edittools",
+      "target": "n_editstate",
+      "label": "acts on"
+    },
+    {
+      "id": "e_25",
+      "source": "n_editstate",
+      "target": "n_actions",
+      "label": "applies"
+    },
+    {
+      "id": "e_26",
+      "source": "n_canvas",
+      "target": "n_play",
+      "label": "runs"
+    },
+    {
+      "id": "e_27",
+      "source": "n_canvas",
+      "target": "n_playbar",
+      "label": "shows"
+    },
+    {
+      "id": "e_28",
+      "source": "n_canvas",
+      "target": "n_token",
+      "label": "draws"
+    },
+    {
+      "id": "e_29",
+      "source": "n_playbar",
+      "target": "n_play",
+      "label": "controls"
+    },
+    {
+      "id": "e_30",
+      "source": "n_token",
+      "target": "n_play",
+      "label": "driven by"
+    },
+    {
+      "id": "e_31",
+      "source": "n_play",
+      "target": "n_store",
+      "label": "reports arrivals"
+    },
+    {
+      "id": "e_32",
+      "source": "n_canvas",
+      "target": "n_camera",
+      "label": "flies"
+    },
+    {
+      "id": "e_33",
+      "source": "n_app",
+      "target": "n_crumbs",
+      "label": "renders"
+    },
+    {
+      "id": "e_34",
+      "source": "n_crumbs",
+      "target": "n_camera",
+      "label": "flies back"
+    },
+    {
+      "id": "e_35",
+      "source": "n_cards",
+      "target": "n_camera",
+      "label": "opens plate"
+    }
+  ],
+  "cards": [
+    {
+      "id": "c_n_user",
+      "target": "n_user",
+      "title": "User",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Outside World",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Opens, edits and plays diagrams.",
+          "format": "markdown"
+        }
+      ]
+    },
+    {
+      "id": "c_n_lalfile",
+      "target": "n_lalfile",
+      "title": ".lal file",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Outside World",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "JSON document on disk; the format the whole app reads and writes.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/tree/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/samples",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_app",
+      "target": "n_app",
+      "title": "App shell",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "App Shell & Panels",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Mounts canvas, toolbar and side panels.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/App.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_toolbar",
+      "target": "n_toolbar",
+      "title": "Toolbar & file menu",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "App Shell & Panels",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Mode switch, open, save, export.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/Toolbar.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_cards",
+      "target": "n_cards",
+      "title": "Card panel & editor",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "App Shell & Panels",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Shows and edits Markdown card fields.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/CardPanel.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_pathed",
+      "target": "n_pathed",
+      "title": "Path & line editor",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "App Shell & Panels",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Builds playable paths and transit lines.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/PathLineEditor.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_store",
+      "target": "n_store",
+      "title": "Store",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Document Model",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Zustand store: document, selection, undo/redo.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/store.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_canvas",
+      "target": "n_canvas",
+      "title": "Canvas",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Canvas Rendering",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "React Flow surface hosting sketchy nodes and edges.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_adapter",
+      "target": "n_adapter",
+      "title": "Doc-to-flow adapter",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Canvas Rendering",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Turns a LalDocument into React Flow nodes and edges.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/adapter.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_sketch",
+      "target": "n_sketch",
+      "title": "Sketch nodes & edges",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Canvas Rendering",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "SketchNode, SketchEdge, LineEdge, PlateFrame components.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/tree/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_rough",
+      "target": "n_rough",
+      "title": "Rough renderer",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Canvas Rendering",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "rough.js wrapper that draws the hand-drawn strokes.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/rough.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_actions",
+      "target": "n_actions",
+      "title": "Canvas actions",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Editing Logic",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Pure edits: add, move, connect, delete.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/edit/canvasActions.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_cardops",
+      "target": "n_cardops",
+      "title": "Card field ops",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Editing Logic",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Add, move, remove fields; URL sanitising.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/edit/cards.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_pathops",
+      "target": "n_pathops",
+      "title": "Path routing",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Editing Logic",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Checks a node sequence can be walked as a path.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/edit/pathLine.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_files",
+      "target": "n_files",
+      "title": "Open & save",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "File IO & Layout",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "File System Access API with download fallback.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/io/files.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_lalio",
+      "target": "n_lalio",
+      "title": "Parse & serialise",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "File IO & Layout",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Reads and writes .lal text.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/io/lal.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_layout",
+      "target": "n_layout",
+      "title": "Auto-layout",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "File IO & Layout",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "dagre layout for nodes without positions.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/io/layout.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_schema",
+      "target": "n_schema",
+      "title": "zod schema",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Document Model",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Single source of truth for the .lal format.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/model/schema.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_validate",
+      "target": "n_validate",
+      "title": "Semantic validation",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Document Model",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Cross-reference rules JSON Schema can't express.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/model/validate.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_legend",
+      "target": "n_legend",
+      "title": "Lines legend",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "App Shell & Panels",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Tap a shared line to highlight everything it touches.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/Legend.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_edittools",
+      "target": "n_edittools",
+      "title": "Edit tools & dock",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Canvas Rendering",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Toolbar for whatever is selected; docked at the bottom on phones.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/EditTools.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_editstate",
+      "target": "n_editstate",
+      "title": "Selection state",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Editing Logic",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "What is selected (node, edge or plate) plus tap, delete and label commit.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/editState.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_play",
+      "target": "n_play",
+      "title": "Play controller",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Play & Plates",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Animates the token along a path outside React; the store only hears about arrivals.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/play.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_playbar",
+      "target": "n_playbar",
+      "title": "Play bar",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Play & Plates",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Path picker, step, play/pause, speed and loop controls.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/PlayBar.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_token",
+      "target": "n_token",
+      "title": "Play token",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Play & Plates",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Rough-drawn shield that travels the path; moved by direct DOM writes.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Token.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_camera",
+      "target": "n_camera",
+      "title": "Camera fly-to",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "Play & Plates",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Flies between plates: into a portal and back.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/camera.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_crumbs",
+      "target": "n_crumbs",
+      "title": "Plate breadcrumbs",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "App Shell & Panels",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Plate trail; tapping an earlier crumb flies back.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/Breadcrumbs.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_1",
+      "target": "e_1",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/App.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_2",
+      "target": "e_2",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/App.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_3",
+      "target": "e_3",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/App.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_4",
+      "target": "e_4",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/App.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_5",
+      "target": "e_5",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/FileMenu.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_6",
+      "target": "e_6",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_7",
+      "target": "e_7",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_8",
+      "target": "e_8",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_9",
+      "target": "e_9",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/SketchNode.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_10",
+      "target": "e_10",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/adapter.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_11",
+      "target": "e_11",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/CardPanel.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_12",
+      "target": "e_12",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/PathLineEditor.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_13",
+      "target": "e_13",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/CardPanel.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_14",
+      "target": "e_14",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_15",
+      "target": "e_15",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/io/files.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_16",
+      "target": "e_16",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/io/files.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_17",
+      "target": "e_17",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/store.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_18",
+      "target": "e_18",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/io/lal.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_19",
+      "target": "e_19",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/model/validate.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_20",
+      "target": "e_20",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/App.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_21",
+      "target": "e_21",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/Legend.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_22",
+      "target": "e_22",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_23",
+      "target": "e_23",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_24",
+      "target": "e_24",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/EditTools.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_25",
+      "target": "e_25",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/editState.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_26",
+      "target": "e_26",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_27",
+      "target": "e_27",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_28",
+      "target": "e_28",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_29",
+      "target": "e_29",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/PlayBar.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_30",
+      "target": "e_30",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Token.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_31",
+      "target": "e_31",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/play.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_32",
+      "target": "e_32",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_33",
+      "target": "e_33",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/App.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_34",
+      "target": "e_34",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/Breadcrumbs.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_35",
+      "target": "e_35",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/CardPanel.tsx",
+          "format": "url"
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "generator": "scripts/repo-diagram.ts",
+    "commit": "7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7"
+  }
+}

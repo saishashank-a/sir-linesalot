@@ -17,7 +17,7 @@ export function Toolbar() {
 
   return (
     <header className="toolbar">
-      <span className="brand">Sir Lines-a-Lot</span>
+      <span className="brand">Sir Linesalot</span>
       {title && <span className="doc-title">{title}{dirty && <span aria-label="unsaved changes"> •</span>}</span>}
       <span className="spacer" />
       <div className="segmented" role="group" aria-label="Mode">

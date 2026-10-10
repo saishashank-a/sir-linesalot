@@ -1,5 +1,5 @@
 {
-  "$id": "urn:sir-lines-a-lot:lal:1",
+  "$id": "urn:sir-linesalot:lal:1",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
@@ -80,7 +80,7 @@
     "edges"
   ],
   "additionalProperties": false,
-  "title": "Sir Lines-a-Lot document (.lal), version 1",
+  "title": "Sir Linesalot document (.lal), version 1",
   "$defs": {
     "id": {
       "type": "string",
