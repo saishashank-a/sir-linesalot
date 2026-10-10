@@ -47,4 +47,8 @@
 @media (max-width: 640px) {
   .ple { position: fixed; left: 0; right: 0; bottom: 0; width: auto; max-height: 50%; border-radius: 16px 16px 0 0; border-bottom: 0; }
   .ple-head { min-height: 48px !important; }
+  /* While picking stops the canvas must stay tappable, so the chips scroll sideways
+     in one row instead of wrapping the sheet up over the diagram. */
+  .ple-route .ple-chips { flex-wrap: nowrap; overflow-x: auto; }
+  .ple-route .ple-chips li { flex: none; white-space: nowrap; }
 }

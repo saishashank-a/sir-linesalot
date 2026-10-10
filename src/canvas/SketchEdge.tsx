@@ -1,11 +1,12 @@
 import { EdgeLabelRenderer, getBezierPath, useInternalNode, type EdgeProps } from '@xyflow/react'
-import { memo, useMemo } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import { useNarrow } from '../useNarrow.ts'
 import { useStore } from '../store.ts'
 import type { SketchFlowEdge } from './adapter.ts'
 import { useEditState } from './editState.ts'
 import { EdgeTools, LabelInput } from './EditTools.tsx'
 import { borderPoint, INTO_SIDE, nodeBox } from './geometry.ts'
+import { registerInk } from './play.ts'
 import { colorVar, gen, roughOptions, seedFromId } from './rough.ts'
 import { RoughPaths } from './RoughPaths.tsx'
 
@@ -18,7 +19,7 @@ export const SketchEdge = memo(function SketchEdge({ id, source, target, data }:
   const selected = useEditState((st) => st.selected?.kind === 'edge' && st.selected.id === id)
   const renaming = useEditState((st) => st.renaming === id)
   const narrow = useNarrow()
-  const { edge, hasCard, dim } = data!
+  const { edge, hasCard, dim, ink } = data!
   const select = () => useEditState.getState().select({ kind: 'edge', id })
 
   const geo = useMemo(() => {
@@ -44,12 +45,16 @@ export const SketchEdge = memo(function SketchEdge({ id, source, target, data }:
     return { d, labelX, labelY, drawables }
   }, [s, t, id, edge.style])
 
+  const inkRef = useCallback((el: SVGPathElement | null) => registerInk(id, el), [id])
+
   if (!geo) return null
   return (
     <g className={`sk-edge${dim ? ' dim' : ''}${hasCard || editing ? ' has-card' : ''}${selected ? ' selected' : ''}`}>
       {/* Wide invisible twin of the clean path: the tap target (and, from milestone d, the Play track). */}
       <path d={geo.d} className="sk-edge-hit" />
       <RoughPaths drawables={geo.drawables} colors={{ S: colorVar(edge.style?.stroke, 'var(--c-ink)') }} dashed={edge.style?.dashed} />
+      {/* Play mode ink: keyed by geometry so a moved edge re-registers its new path. */}
+      {ink && <path key={geo.d} ref={inkRef} d={geo.d} className="sk-ink" style={{ stroke: ink }} />}
       {edge.label && !renaming && (
         <EdgeLabelRenderer>
           <div

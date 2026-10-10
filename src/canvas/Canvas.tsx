@@ -14,8 +14,10 @@ import {
 } from '@xyflow/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { addEdge, addNode, addPlate, moveNode, movePlate } from '../edit/canvasActions.ts'
+import { overviewPlate } from '../model/resolve.ts'
 import { useStore } from '../store.ts'
-import { docToFlow, type LineFlowEdge, type PlateFlowNode, type SketchFlowEdge, type StepFlowNode } from './adapter.ts'
+import { flyToPlate, focusedPlate, registerCamera } from './camera.ts'
+import { docToFlow, pathColor, type LineFlowEdge, type PlateFlowNode, type SketchFlowEdge, type StepFlowNode } from './adapter.ts'
 import { typingIn } from '../typing.ts'
 import { useNarrow } from '../useNarrow.ts'
 import { deleteSelected, useEditState } from './editState.ts'
@@ -24,6 +26,9 @@ import { LineEdge } from './LineEdge.tsx'
 import { PlateFrame } from './PlateFrame.tsx'
 import { SketchEdge } from './SketchEdge.tsx'
 import { SketchNode } from './SketchNode.tsx'
+import { loadPath, pause, play, stepBy, stopPlay } from './play.ts'
+import { PlayBar } from './PlayBar.tsx'
+import { Token } from './Token.tsx'
 import './edit.css'
 
 const nodeTypes = { step: SketchNode, plate: PlateFrame }
@@ -32,23 +37,46 @@ type FlowNode = StepFlowNode | PlateFlowNode
 
 
 // View mode: nothing drags, connects or selects; taps open cards and highlight lines.
+// Play mode: like View, plus a token that travels the picked path (see play.ts).
 // Edit mode: drag nodes and plates, connect/reconnect, select to get a toolbar.
 export function Canvas() {
   const doc = useStore((s) => s.doc)!
   const highlightLineId = useStore((s) => s.highlightLineId)
   const theme = useStore((s) => s.theme)
   const editing = useStore((s) => s.mode === 'edit')
+  const playing = useStore((s) => s.mode === 'play')
+  const playPathId = useStore((s) => (s.mode === 'play' ? s.play.pathId : null))
   const { openCard, toggleLine, edit } = useStore.getState()
-  const { getInternalNode } = useReactFlow()
+  const { getInternalNode, fitBounds } = useReactFlow()
   const touches = useTouchCount()
+  const narrow = useNarrow()
+  // Phones open on the overview plate: every plate side by side is too small to read there.
+  const startPlate = overviewPlate(doc)
+  // Outside Edit mode, plates other than the focused one dim slightly so the detail
+  // doesn't drown out the plate you're reading.
+  const focusPlateId = useStore((s) => s.focusPlateId)
+  const focusId = !editing && (doc.plates?.length ?? 0) > 1 ? focusedPlate(doc, focusPlateId)?.id : undefined
+
+  useEffect(() => {
+    registerCamera(fitBounds)
+    return () => registerCamera(null)
+  }, [fitBounds])
 
   const flow = useMemo(() => {
-    const { nodes, edges } = docToFlow(doc, highlightLineId)
+    const { nodes, edges } = docToFlow(doc, highlightLineId, playPathId)
+    const plateOf = new Map(doc.nodes.map((n) => [n.id, n.plate]))
+    const off = (plate: string | undefined) => (focusId && plate !== focusId ? 'off-focus' : undefined)
     return {
-      nodes: nodes.map((n): FlowNode => (n.type === 'plate' ? { ...n, dragHandle: '.sk-plate-title' } : n)),
-      edges: edges.map((e) => (e.type === 'line' ? { ...e, reconnectable: false } : e)),
+      nodes: nodes.map((n): FlowNode =>
+        n.type === 'plate' ? { ...n, dragHandle: '.sk-plate-title', className: off(n.id) } : { ...n, className: off(n.parentId) },
+      ),
+      edges: edges.map((e) => ({
+        ...e,
+        className: off(plateOf.get(e.source)),
+        ...(e.type === 'line' && { reconnectable: false }),
+      })),
     }
-  }, [doc, highlightLineId])
+  }, [doc, highlightLineId, playPathId, focusId])
 
   // Drags move a local copy; the document only changes on drop, so one drag = one undo step
   // and plate frames stay as they were at drag start while the node moves.
@@ -98,6 +126,33 @@ export function Canvas() {
     return () => window.removeEventListener('keydown', onKey)
   }, [editing])
 
+  // Entering Play loads the first path; Space plays/pauses, arrow keys step.
+  useEffect(() => {
+    if (!playing) return
+    loadPath(useStore.getState().doc?.paths?.[0]?.id ?? null)
+    const onKey = (e: KeyboardEvent) => {
+      if (typingIn(e.target) || e.target instanceof HTMLButtonElement || e.target instanceof HTMLSelectElement) return
+      if (e.key === ' ') (useStore.getState().play.status === 'playing' ? pause : play)()
+      else if (e.key === 'ArrowRight') stepBy(1)
+      else if (e.key === 'ArrowLeft') stepBy(-1)
+      else return
+      e.preventDefault()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      stopPlay()
+    }
+  }, [playing])
+
+  const playPath = playPathId ? doc.paths?.find((p) => p.id === playPathId) : undefined
+
+  // Picking a path on another plate flies there, so "Fulfilment steps" plays in its detail plate.
+  const playPlate = playPath && doc.nodes.find((n) => n.id === playPath.nodes[0])?.plate
+  useEffect(() => {
+    if (playPlate && playPlate !== useStore.getState().focusPlateId) flyToPlate(playPlate)
+  }, [playPlate])
+
   return (
     <ReactFlow
       className={editing ? 'is-editing' : undefined}
@@ -127,12 +182,14 @@ export function Canvas() {
       deleteKeyCode={null}
       colorMode={theme === 'auto' ? 'system' : theme}
       fitView
-      fitViewOptions={{ padding: 0.1 }}
+      fitViewOptions={{ padding: 0.1, ...(narrow && startPlate && { nodes: [{ id: startPlate.id }] }) }}
       minZoom={0.1}
     >
       <Background variant={BackgroundVariant.Dots} gap={24} size={1.4} color="var(--c-grid)" />
       <Controls showInteractive={false} />
       {editing && <EditPalette />}
+      {playing && <PlayBar />}
+      {playPath && <Token color={pathColor(doc, playPath)} />}
     </ReactFlow>
   )
 }

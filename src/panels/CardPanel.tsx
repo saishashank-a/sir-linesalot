@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef } from 'react'
+import { flyToPlate } from '../canvas/camera.ts'
 import { labelOf } from '../edit/cards.ts'
 import { useStore } from '../store.ts'
 import { typingIn } from '../typing.ts'
@@ -13,6 +14,9 @@ export function CardPanel() {
   const close = useStore((s) => s.closeCard)
   const editing = useStore((s) => s.mode === 'edit')
   const card = doc?.cards?.find((c) => c.target === target)
+  const focusPlateId = useStore((s) => s.focusPlateId)
+  const link = doc?.nodes.find((n) => n.id === target)?.link
+  const portal = link?.plate !== focusPlateId ? link : undefined // hidden once you're there
   const open = !!target && (!!card || editing) // edit mode can open a card that doesn't exist yet
   const narrow = useNarrow()
   const ref = useRef<HTMLElement>(null)
@@ -65,6 +69,11 @@ export function CardPanel() {
                 </div>
               ))}
             </dl>
+          )}
+          {portal && !editing && (
+            <button type="button" className="open-plate" onClick={() => flyToPlate(portal.plate)}>
+              Open plate →
+            </button>
           )}
         </motion.aside>
       )}

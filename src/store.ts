@@ -5,7 +5,18 @@ import type { LalDocument } from './model/schema.ts'
 import { validateDoc, type Issue } from './model/validate.ts'
 
 export type Theme = 'light' | 'dark' | 'auto'
-export type Mode = 'view' | 'edit'
+export type Mode = 'view' | 'edit' | 'play'
+export type PlayStatus = 'idle' | 'playing' | 'paused' | 'done'
+
+export interface PlayState {
+  pathId: string | null
+  status: PlayStatus
+  step: number // index into the path's nodes of the node the token last reached
+  speed: number // 0.5 to 2
+  loop: boolean
+  autoCards: boolean // open each node's card as the token arrives
+}
+const PLAY_IDLE = { pathId: null, status: 'idle', step: 0 } as const
 
 const HISTORY_LIMIT = 100
 
@@ -23,6 +34,7 @@ interface State {
   highlightLineId: string | null
   theme: Theme
   mode: Mode
+  play: PlayState
 
   // Editing. ponytail: whole-document snapshots; switch to patches if docs get huge.
   past: LalDocument[]
@@ -38,6 +50,8 @@ interface State {
   picker: ((nodeId: string) => void) | null
   // The route being picked, so the canvas can number its stops (color is a CSS colour).
   routeMarks: { nodes: string[]; color: string } | null
+  // The plate the camera last flew to (null = the overview). Other plates dim slightly.
+  focusPlateId: string | null
 
   loadText: (text: string, source?: { fileName?: string; fileHandle?: FileSystemFileHandle }) => Promise<void>
   openCard: (target: string) => void
@@ -51,7 +65,9 @@ interface State {
   redo: () => void
   markSaved: (source?: { fileName?: string; fileHandle?: FileSystemFileHandle | null }) => void
   setPicker: (picker: ((nodeId: string) => void) | null) => void
+  setPlay: (patch: Partial<PlayState>) => void
   setRouteMarks: (marks: State['routeMarks']) => void
+  setFocusPlate: (plateId: string | null) => void
 }
 
 export const useStore = create<State>()((set, get) => ({
@@ -63,6 +79,7 @@ export const useStore = create<State>()((set, get) => ({
   highlightLineId: null,
   theme: 'auto',
   mode: 'view',
+  play: { ...PLAY_IDLE, speed: 1, loop: false, autoCards: false },
   past: [],
   future: [],
   lastCoalesce: null,
@@ -71,6 +88,7 @@ export const useStore = create<State>()((set, get) => ({
   fileHandle: null,
   picker: null,
   routeMarks: null,
+  focusPlateId: null,
 
   async loadText(text, source) {
     const { doc, issues } = readLal(text)
@@ -94,7 +112,9 @@ export const useStore = create<State>()((set, get) => ({
       fileName: source?.fileName ?? null,
       fileHandle: source?.fileHandle ?? null,
       picker: null,
+      play: { ...s.play, ...PLAY_IDLE },
       routeMarks: null,
+      focusPlateId: null,
     }))
   },
 
@@ -107,7 +127,7 @@ export const useStore = create<State>()((set, get) => ({
   toggleLine: (lineId) => set((s) => ({ highlightLineId: s.highlightLineId === lineId ? null : lineId })),
   setTheme: (theme) => set({ theme }),
   clearIssues: () => set({ issues: [] }),
-  setMode: (mode) => set({ mode, picker: null, routeMarks: null, lastCoalesce: null }),
+  setMode: (mode) => set((s) => ({ mode, picker: null, routeMarks: null, lastCoalesce: null, play: { ...s.play, ...PLAY_IDLE } })),
 
   // The only way to change the document. Applies `recipe` to a copy, refuses the
   // change if the result breaks a rule (so the doc is always valid), and records undo.
@@ -148,5 +168,7 @@ export const useStore = create<State>()((set, get) => ({
       fileHandle: source?.fileHandle === undefined ? s.fileHandle : source.fileHandle,
     })),
   setPicker: (picker) => set({ picker }),
+  setPlay: (patch) => set((s) => ({ play: { ...s.play, ...patch } })),
   setRouteMarks: (routeMarks) => set({ routeMarks }),
+  setFocusPlate: (focusPlateId) => set({ focusPlateId }),
 }))

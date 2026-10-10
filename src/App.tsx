@@ -5,6 +5,7 @@ import sample from '../samples/request-flows.lal?raw'
 import { Canvas } from './canvas/Canvas.tsx'
 import { openDropped } from './io/files.ts'
 import { CardPanel } from './panels/CardPanel.tsx'
+import { Breadcrumbs } from './panels/Breadcrumbs.tsx'
 import { Legend } from './panels/Legend.tsx'
 import { PathLineEditor } from './panels/PathLineEditor.tsx'
 import { Toolbar } from './panels/Toolbar.tsx'
@@ -63,6 +64,7 @@ export default function App() {
           )}
           {/* One column, so a legend that wraps pushes the drawer down instead of under it. */}
           <div className="side-stack">
+            <Breadcrumbs />
             <Legend />
             {mode === 'edit' && <PathLineEditor />}
           </div>

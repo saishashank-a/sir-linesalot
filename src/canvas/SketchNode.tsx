@@ -3,13 +3,14 @@ import { memo, useMemo, useRef, type CSSProperties } from 'react'
 import { useNarrow } from '../useNarrow.ts'
 import { useStore } from '../store.ts'
 import type { StepFlowNode } from './adapter.ts'
+import { flyToPlate } from './camera.ts'
 import { tapNode, useEditState } from './editState.ts'
 import { LabelInput, NodeTools } from './EditTools.tsx'
 import { colorVar, gen, roughOptions, seedFromId, shapeDrawable } from './rough.ts'
 import { RoughPaths } from './RoughPaths.tsx'
 
 export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowNode>) {
-  const { node, size, hasCard, dim, halo } = data
+  const { node, size, hasCard, dim, halo, onPath, merge } = data
   const openCard = useStore((s) => s.openCard)
   const picker = useStore((s) => s.picker)
   const editing = useStore((s) => s.mode === 'edit')
@@ -17,6 +18,8 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
   const renaming = useEditState((s) => s.renaming === node.id)
   const connectFrom = useEditState((s) => s.connectFrom === node.id)
   const narrow = useNarrow()
+  // Play mode: the token is at (or waiting on) this node.
+  const arrived = useStore((s) => !!onPath && s.doc?.paths?.find((p) => p.id === s.play.pathId)?.nodes[s.play.step] === node.id)
   // Stop numbers while a path/line route is being picked, e.g. "2" or "1, 4" for a revisit.
   const stops = useStore((s) => s.routeMarks?.nodes.flatMap((id, i) => (id === node.id ? [i + 1] : [])).join(', '))
   const markColor = useStore((s) => s.routeMarks?.color)
@@ -39,13 +42,20 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
   }, [node.id, node.link, shape, w, h, style])
 
   const colors = { S: colorVar(style?.stroke, 'var(--c-ink)'), F: colorVar(style?.fill, 'var(--c-ink)'), P: 'var(--c-paper)' }
-  const tappable = hasCard || editing || !!picker
+  const tappable = hasCard || editing || !!picker || !!node.link
+  // A portal flies to its plate; wide screens also open its card beside it (on phones the
+  // bottom sheet would cover the plate you just flew to).
+  const activate = () => {
+    if (!node.link) return openCard(node.id)
+    if (!narrow) openCard(node.id) // first, so the camera frames the plate beside the card
+    flyToPlate(node.link.plate)
+  }
   const Label = tappable ? 'button' : 'div'
 
   return (
     <div
-      className={`sk-node${note ? ' note' : ''}${dim ? ' dim' : ''}${halo ? ' halo' : ''}${editing ? ' editing' : ''}${selected ? ' selected' : ''}${connectFrom ? ' connect-from' : ''}`}
-      style={{ width: w, height: h, '--halo': halo } as CSSProperties}
+      className={`sk-node${note ? ' note' : ''}${dim ? ' dim' : ''}${halo ? ' halo' : ''}${editing ? ' editing' : ''}${selected ? ' selected' : ''}${connectFrom ? ' connect-from' : ''}${arrived ? ' arrived' : ''}${merge ? ' merge' : ''}`}
+      style={{ width: w, height: h, '--halo': halo, '--arrive': onPath } as CSSProperties}
     >
       <svg width={w} height={h} className="sk-shape" aria-hidden>
         <RoughPaths drawables={drawables} colors={colors} dashed={style?.dashed} />
@@ -61,9 +71,9 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
           {...(tappable && {
             type: 'button',
             // Picker first (path/line editors), then edit-mode select/connect, then the card.
-            onClick: () => (picker ? picker(node.id) : editing ? tapNode(node.id) : openCard(node.id)),
+            onClick: () => (picker ? picker(node.id) : editing ? tapNode(node.id) : activate()),
             onDoubleClick: () => editing && !picker && useEditState.getState().setRenaming(node.id),
-            'aria-label': picker ? `Pick ${node.label}` : `${node.label}, ${editing ? 'select' : 'open card'}`,
+            'aria-label': picker ? `Pick ${node.label}` : `${node.label}, ${editing ? 'select' : node.link ? 'open plate' : 'open card'}`,
             ...(editing && press),
           })}
         >
@@ -73,6 +83,12 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
       {stops && (
         <span className="sk-stop" style={{ '--mark': markColor } as CSSProperties} aria-label={`stop ${stops}`}>
           {stops}
+        </span>
+      )}
+      {merge && (
+        <span className="sk-merge" title="Paths merge here" aria-label={`${merge.length} paths merge here`}>
+          {merge.map((c, i) => <span key={i} style={{ background: c }} />)}
+          merge
         </span>
       )}
       <NodeToolbar isVisible={editing && selected && !picker && !renaming && !narrow} position={Position.Top} offset={12}>

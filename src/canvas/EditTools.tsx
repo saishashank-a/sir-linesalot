@@ -2,7 +2,8 @@
 import { useEffect, useRef } from 'react'
 import { PALETTE, type LalEdge, type LalNode, type LalPlate } from '../model/schema.ts'
 import { useStore } from '../store.ts'
-import { plateDeleteBlocker } from '../edit/canvasActions.ts'
+import { plateDeleteBlocker, tidyPlate } from '../edit/canvasActions.ts'
+import { flyToPlate } from './camera.ts'
 import { commitLabel, deleteSelected, useEditState } from './editState.ts'
 
 const SHAPES = ['rectangle', 'ellipse', 'diamond', 'pill'] as const
@@ -50,6 +51,8 @@ export function NodeTools({ node }: { node: LalNode }) {
   const connecting = useEditState((s) => s.connectFrom === node.id)
   const { setRenaming, setConnectFrom } = useEditState.getState()
   const openCard = useStore((s) => s.openCard)
+  const plates = useStore((s) => s.doc?.plates)
+  const otherPlates = plates?.filter((p) => p.id !== node.plate)
   const note = node.kind === 'note'
 
   return (
@@ -80,6 +83,22 @@ export function NodeTools({ node }: { node: LalNode }) {
         <option value="">{note ? 'Default fill' : 'No fill'}</option>
         {FILLS.map((c) => <option key={c} value={c}>{c}</option>)}
       </select>
+      {!note && !!otherPlates?.length && (
+        <select
+          aria-label="Portal to"
+          value={node.link?.plate ?? ''}
+          onChange={(e) =>
+            editNode(node.id, (n) => {
+              if (e.target.value) n.link = { plate: e.target.value }
+              else delete n.link
+            })
+          }
+        >
+          <option value="">Not a portal</option>
+          {otherPlates.map((p) => <option key={p.id} value={p.id}>Portal to {p.title}</option>)}
+        </select>
+      )}
+      {node.link && <button type="button" onClick={() => flyToPlate(node.link!.plate)}>Open plate</button>}
       {!note && (
         <button type="button" aria-pressed={connecting} onClick={() => setConnectFrom(connecting ? null : node.id)}>
           Connect
@@ -99,6 +118,7 @@ export function PlateTools({ plate }: { plate: LalPlate }) {
     <div className="edit-tools nodrag nopan" role="toolbar" aria-label={`Edit plate ${plate.title}`}>
       <button type="button" onClick={() => setRenaming(plate.id)}>Rename</button>
       <button type="button" onClick={() => openCard(plate.id)}>Card</button>
+      <button type="button" onClick={() => useStore.getState().edit((d) => tidyPlate(d, plate.id))} title="Auto-layout this plate's nodes">Tidy</button>
       {/* Deleting the only plate keeps its contents and just removes the frame. */}
       <button type="button" className="danger" disabled={!!blocked} title={blocked ?? undefined} onClick={deleteSelected}>
         {only ? 'Remove frame' : 'Delete plate'}
