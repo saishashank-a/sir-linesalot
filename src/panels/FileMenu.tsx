@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import sample from '../../samples/request-flows.lal?raw'
-import { confirmDiscard, openFile, openFromFile, save, saveAs } from '../io/files.ts'
+import { confirmDiscard, exportAs, openFile, openFromFile, save, saveAs } from '../io/files.ts'
 import { useStore } from '../store.ts'
 import './FileMenu.css'
 
@@ -97,12 +97,22 @@ export function FileMenu() {
           <button type="button" role="menuitem" onClick={() => run(() => confirmDiscard() && useStore.getState().loadText(sample))}>
             Load sample
           </button>
+          <hr role="separator" />
+          <button type="button" role="menuitem" onClick={() => run(() => exportAs('svg'))}>
+            Export SVG
+          </button>
+          <button type="button" role="menuitem" onClick={() => run(() => exportAs('png'))}>
+            Export PNG
+          </button>
+          <button type="button" role="menuitem" onClick={() => run(() => exportAs('excalidraw'))}>
+            Export .excalidraw
+          </button>
         </div>
       )}
       <input
         ref={input}
         type="file"
-        accept=".lal,application/json"
+        accept=".lal,.excalidraw,application/json"
         hidden
         onChange={async (e) => {
           const f = e.target.files?.[0]

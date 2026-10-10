@@ -10,3 +10,4 @@
 }
 .toolbar .file-menu-list button:hover, .toolbar .file-menu-list button:focus-visible { background: var(--c-paper); }
 .file-menu-list kbd { font: inherit; font-size: 14px; color: var(--c-muted); }
+.file-menu-list hr { border: 0; border-top: 1.5px solid var(--c-grid); margin: 4px 0; }

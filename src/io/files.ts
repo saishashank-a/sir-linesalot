@@ -1,6 +1,10 @@
 // Open / Save / Save As via the File System Access API. Browsers without it
 // (Firefox, Safari) get <input type=file> to open and <a download> to save.
+// Open also takes .excalidraw files, converted on the way in; exports always download.
+import { focusedPlate } from '../canvas/camera.ts'
 import { useStore } from '../store.ts'
+import { docToExcalidraw, excalidrawToDoc } from './excalidraw.ts'
+import { docToSvg, excalifontDataUrl, svgToPng, themeColors } from './export.ts'
 import { serializeLal } from './lal.ts'
 
 // Only the picker functions are missing from TS's DOM lib; handles and writables are typed.
@@ -13,6 +17,7 @@ interface FsaWindow {
 type DropHandleItem = { getAsFileSystemHandle?: () => Promise<FileSystemHandle | null> }
 const fsa = () => window as unknown as FsaWindow
 const LAL_TYPES: PickerType[] = [{ description: 'Sir Linesalot document', accept: { 'application/json': ['.lal'] } }]
+const OPEN_TYPES: PickerType[] = [{ description: 'Sir Linesalot or Excalidraw', accept: { 'application/json': ['.lal', '.excalidraw'] } }]
 
 export function slug(title: string): string {
   const s = title.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
@@ -37,9 +42,9 @@ export async function openFile(fallbackInput: HTMLInputElement | null) {
   const pick = fsa().showOpenFilePicker
   if (!pick) return fallbackInput?.click() // its change handler calls openFromFile
   try {
-    const [fileHandle] = await pick({ types: LAL_TYPES })
+    const [fileHandle] = await pick({ types: OPEN_TYPES })
     const file = await fileHandle.getFile()
-    await useStore.getState().loadText(await file.text(), { fileName: file.name, fileHandle })
+    await load(await file.text(), file.name, fileHandle)
   } catch (e) {
     if (!isAbort(e)) report("Couldn't open that file", e)
   }
@@ -47,7 +52,21 @@ export async function openFile(fallbackInput: HTMLInputElement | null) {
 
 // A plain File (the <input> fallback): no handle, so Save becomes Save as.
 export async function openFromFile(file: File) {
-  await useStore.getState().loadText(await file.text(), { fileName: file.name })
+  await load(await file.text(), file.name)
+}
+
+// .excalidraw files are converted; the result is a new, unsaved .lal (no handle, so
+// Save can't overwrite the drawing) and anything that didn't map is listed.
+async function load(text: string, fileName: string, fileHandle?: FileSystemFileHandle) {
+  const { loadText } = useStore.getState()
+  if (!/\.excalidraw$/i.test(fileName) && !/^\s*\{\s*"type"\s*:\s*"excalidraw"/.test(text)) return loadText(text, { fileName, fileHandle })
+  const { doc, issues, skipped } = excalidrawToDoc(text)
+  if (!doc) return useStore.setState({ issues, issuesTitle: "Couldn't import that Excalidraw file" })
+  await loadText(serializeLal(doc), { fileName: fileName.replace(/\.excalidraw$/i, '') + '.lal' })
+  useStore.setState({
+    dirty: true,
+    ...(skipped.length && { issues: skipped.map((message) => ({ path: '', message })), issuesTitle: 'Imported from Excalidraw. Skipped:' }),
+  })
 }
 
 // Drag-drop. Chromium can hand over a writable handle, so Save writes back to the
@@ -60,7 +79,7 @@ export async function openDropped(dt: DataTransfer) {
   if (!file || !confirmDiscard()) return
   const h = await handle
   const fileHandle = h?.kind === 'file' ? (h as FileSystemFileHandle) : undefined
-  await useStore.getState().loadText(await file.text(), { fileName: file.name, fileHandle })
+  await load(await file.text(), file.name, fileHandle)
 }
 
 export async function save() {
@@ -101,8 +120,25 @@ async function write(handle: FileSystemFileHandle) {
   await w.close()
 }
 
-function download(text: string, name: string) {
-  const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }))
+// Exports cover the plate you're looking at (the whole drawing when there are no plates).
+export async function exportAs(kind: 'svg' | 'png' | 'excalidraw') {
+  const { doc, focusPlateId } = useStore.getState()
+  if (!doc) return
+  const base = slug(doc.title)
+  try {
+    if (kind === 'excalidraw') return download(docToExcalidraw(doc), `${base}.excalidraw`)
+    const plate = doc.plates?.length ? focusedPlate(doc, focusPlateId) : undefined
+    const svg = docToSvg(doc, plate?.id ?? null, { colors: themeColors(), fontDataUrl: await excalifontDataUrl() })
+    const name = plate && plate.kind !== 'overview' ? `${base}-${slug(plate.title)}` : base
+    if (kind === 'svg') download(new Blob([svg], { type: 'image/svg+xml' }), `${name}.svg`)
+    else download(await svgToPng(svg), `${name}.png`)
+  } catch (e) {
+    report("Couldn't export", e)
+  }
+}
+
+function download(data: string | Blob, name: string) {
+  const url = URL.createObjectURL(typeof data === 'string' ? new Blob([data], { type: 'application/json' }) : data)
   Object.assign(document.createElement('a'), { href: url, download: name }).click()
   setTimeout(() => URL.revokeObjectURL(url), 1000)
 }

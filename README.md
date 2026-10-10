@@ -6,15 +6,16 @@ An interactive, hand-drawn style diagram canvas: sketchy nodes you can tap to op
 
 ## Status
 
-Milestones (a) to (e) are done:
+All planned milestones, (a) to (f), are done:
 
 - **(a)** `.lal` schema, validator and path resolver
 - **(b)** read-only viewer with tappable cards
 - **(c)** editor, on desktop and phone
 - **(d)** Play mode
 - **(e)** plates and camera fly-to
+- **(f)** SVG, PNG and `.excalidraw` export, and `.excalidraw` import (File → Open)
 
-Next is **(f)**: SVG, PNG and `.excalidraw` export, and `.excalidraw` import. See [PLAN.md](PLAN.md) for the full plan.
+See [PLAN.md](PLAN.md) for the full plan.
 
 ## License
 

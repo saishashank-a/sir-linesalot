@@ -6,7 +6,7 @@ import type { StepFlowNode } from './adapter.ts'
 import { flyToPlate } from './camera.ts'
 import { tapNode, useEditState } from './editState.ts'
 import { LabelInput, NodeTools } from './EditTools.tsx'
-import { colorVar, gen, roughOptions, seedFromId, shapeDrawable } from './rough.ts'
+import { nodeColors, nodeDrawables, nodeStyle, portalGlyph } from './rough.ts'
 import { RoughPaths } from './RoughPaths.tsx'
 
 export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowNode>) {
@@ -25,23 +25,11 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
   const markColor = useStore((s) => s.routeMarks?.color)
   const press = useLongPress(() => editing && !picker && useEditState.getState().select({ kind: 'node', id: node.id }))
   const note = node.kind === 'note'
-  const shape = note ? 'rectangle' : (node.shape ?? 'rectangle')
-  const style = useMemo(
-    () => (note ? { fill: 'yellow' as const, fillStyle: 'solid' as const, roughness: 1.6, ...node.style } : node.style),
-    [note, node.style],
-  )
   const { width: w, height: h } = size
 
-  // Regenerates only when the shape itself changes; dragging moves the wrapper, not this.
-  const drawables = useMemo(() => {
-    const seed = seedFromId(node.id)
-    const backing = shapeDrawable(shape, w, h, { seed, roughness: 0, stroke: 'none', fill: 'P', fillStyle: 'solid' })
-    const outline = shapeDrawable(shape, w, h, roughOptions(style, seed))
-    const portal = node.link && shapeDrawable(shape, w, h, roughOptions(style, seed + 1, { fill: undefined }))
-    return portal ? [backing, outline, portal] : [backing, outline]
-  }, [node.id, node.link, shape, w, h, style])
-
-  const colors = { S: colorVar(style?.stroke, 'var(--c-ink)'), F: colorVar(style?.fill, 'var(--c-ink)'), P: 'var(--c-paper)' }
+  // Regenerates only when the node itself changes; dragging moves the wrapper, not this.
+  const drawables = useMemo(() => nodeDrawables(node, w, h), [node, w, h])
+  const colors = nodeColors(node)
   const tappable = hasCard || editing || !!picker || !!node.link
   // A portal flies to its plate; wide screens also open its card beside it (on phones the
   // bottom sheet would cover the plate you just flew to).
@@ -58,7 +46,7 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
       style={{ width: w, height: h, '--halo': halo, '--arrive': onPath } as CSSProperties}
     >
       <svg width={w} height={h} className="sk-shape" aria-hidden>
-        <RoughPaths drawables={drawables} colors={colors} dashed={style?.dashed} />
+        <RoughPaths drawables={drawables} colors={colors} dashed={nodeStyle(node)?.dashed} />
         {node.link && <PortalGlyph x={w - 22} y={h - 20} />}
       </svg>
       {renaming ? (
@@ -100,12 +88,8 @@ export const SketchNode = memo(function SketchNode({ data }: NodeProps<StepFlowN
   )
 })
 
-// "Enter plate" mark: a small square with an arrow into it.
 function PortalGlyph({ x, y }: { x: number; y: number }) {
-  const paths = useMemo(() => {
-    const o = { seed: 7, roughness: 0.8, stroke: 'S', strokeWidth: 1.2 }
-    return [gen.rectangle(x, y, 14, 12, o), gen.line(x - 6, y - 6, x + 6, y + 5, o), gen.line(x + 6, y + 5, x + 6, y, o)]
-  }, [x, y])
+  const paths = useMemo(() => portalGlyph(x, y), [x, y])
   return <RoughPaths drawables={paths} colors={{ S: 'var(--c-ink)' }} />
 }
 
