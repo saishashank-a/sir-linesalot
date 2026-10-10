@@ -23,6 +23,24 @@ function textWidth(text: string): number {
   return ctx.measureText(text).width
 }
 
+// Greedy word wrap at `max` px, for renderers without CSS layout (SVG export).
+// Overlong words are kept whole, like the canvas's overflow-wrap would break them visually.
+export function wrapText(text: string, max = MAX_TEXT, px = 18): string[] {
+  const width = (t: string) => (textWidth(t) * px) / 18
+  const lines: string[] = []
+  let line = ''
+  for (const word of text.split(/\s+/).filter(Boolean)) {
+    const next = line ? `${line} ${word}` : word
+    if (line && width(next) > max) {
+      lines.push(line)
+      line = word
+    } else line = next
+  }
+  return line ? [...lines, line] : lines.length ? lines : ['']
+}
+
+export const textWidthAt = (text: string, px: number) => (textWidth(text) * px) / 18
+
 const sizeCache = new Map<string, Size>()
 // Callers must await document.fonts.load(LABEL_FONT) first, or the cache keeps fallback-font widths.
 export function nodeSize(n: LalNode): Size {

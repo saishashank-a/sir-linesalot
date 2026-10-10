@@ -3,7 +3,7 @@
 // for CSS variables at render time, so a theme switch never regenerates shapes.
 import rough from 'roughjs'
 import type { Drawable, Options } from 'roughjs/bin/core'
-import type { Style } from '../model/schema.ts'
+import type { LalNode, LalPlate, Style } from '../model/schema.ts'
 
 export const gen = rough.generator()
 
@@ -50,4 +50,58 @@ export function shapeDrawable(shape: Shape, w: number, h: number, opts: Options)
     default:
       return gen.rectangle(p, p, w - 2 * p, h - 2 * p, opts)
   }
+}
+
+// Everything below is shared by the canvas components and the exporters (src/io/export.ts),
+// so an exported drawing matches the canvas stroke for stroke.
+
+export function nodeStyle(node: LalNode): Style | undefined {
+  return node.kind === 'note' ? { fill: 'yellow', fillStyle: 'solid', roughness: 1.6, ...node.style } : node.style
+}
+
+export const nodeShape = (node: LalNode): Shape => (node.kind === 'note' ? 'rectangle' : (node.shape ?? 'rectangle'))
+
+// Paper backing, outline, and a second outline for portals.
+export function nodeDrawables(node: LalNode, w: number, h: number): Drawable[] {
+  const seed = seedFromId(node.id)
+  const shape = nodeShape(node)
+  const style = nodeStyle(node)
+  const backing = shapeDrawable(shape, w, h, { seed, roughness: 0, stroke: 'none', fill: 'P', fillStyle: 'solid' })
+  const outline = shapeDrawable(shape, w, h, roughOptions(style, seed))
+  const portal = node.link && shapeDrawable(shape, w, h, roughOptions(style, seed + 1, { fill: undefined }))
+  return portal ? [backing, outline, portal] : [backing, outline]
+}
+
+export function nodeColors(node: LalNode): Record<string, string> {
+  const style = nodeStyle(node)
+  return { S: colorVar(style?.stroke, 'var(--c-ink)'), F: colorVar(style?.fill, 'var(--c-ink)'), P: 'var(--c-paper)' }
+}
+
+// "Enter plate" mark: a small square with an arrow into it, at (x, y) inside the node.
+export function portalGlyph(x: number, y: number): Drawable[] {
+  const o = { seed: 7, roughness: 0.8, stroke: 'S', strokeWidth: 1.2 }
+  return [gen.rectangle(x, y, 14, 12, o), gen.line(x - 6, y - 6, x + 6, y + 5, o), gen.line(x + 6, y + 5, x + 6, y, o)]
+}
+
+export const plateDrawables = (plate: LalPlate, w: number, h: number): Drawable[] => [
+  gen.rectangle(4, 4, w - 8, h - 8, { seed: seedFromId(plate.id), roughness: 1.4, stroke: 'S', strokeWidth: plate.kind === 'overview' ? 2.2 : 1.4 }),
+]
+
+// One shared-line segment, centre to centre.
+export const lineSegment = (id: string, a: { x: number; y: number }, b: { x: number; y: number }): Drawable =>
+  gen.line(a.x, a.y, b.x, b.y, { seed: seedFromId(id), roughness: 0.8, stroke: 'S', strokeWidth: 7, disableMultiStroke: true })
+
+// toPaths() drops rough's dash option, so dashes are applied by the renderers, to outline strokes only.
+export interface PathSpec { d: string; stroke: string; strokeWidth: number; fill?: string; fillOpacity?: number; dash?: string }
+export function pathSpecs(drawables: Drawable[], colors: Record<string, string>, dashed?: boolean): PathSpec[] {
+  return drawables
+    .flatMap((d) => gen.toPaths(d))
+    .map((p) => ({
+      d: p.d,
+      stroke: colors[p.stroke] ?? p.stroke,
+      strokeWidth: p.strokeWidth,
+      fill: p.fill ? (colors[p.fill] ?? p.fill) : undefined,
+      fillOpacity: p.fill === 'F' ? 0.35 : undefined,
+      dash: dashed && p.stroke === 'S' ? '8 6' : undefined,
+    }))
 }

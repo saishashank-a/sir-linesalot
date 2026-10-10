@@ -2,7 +2,7 @@ import { useInternalNode, type EdgeProps } from '@xyflow/react'
 import { memo, useMemo } from 'react'
 import type { LineFlowEdge } from './adapter.ts'
 import { nodeBox } from './geometry.ts'
-import { gen, seedFromId } from './rough.ts'
+import { lineSegment } from './rough.ts'
 import { RoughPaths } from './RoughPaths.tsx'
 
 // One segment of a shared line, centre to centre. Nodes are opaque and drawn on
@@ -18,8 +18,7 @@ export const LineEdge = memo(function LineEdge({ id, source, target, data }: Edg
     if (!s || !t) return null
     const a = nodeBox(s)
     const b = nodeBox(t)
-    const opts = { seed: seedFromId(id), roughness: 0.8, stroke: 'S', strokeWidth: 7, disableMultiStroke: true }
-    return { d: `M${a.cx},${a.cy} L${b.cx},${b.cy}`, drawables: [gen.line(a.cx, a.cy, b.cx, b.cy, opts)] }
+    return { d: `M${a.cx},${a.cy} L${b.cx},${b.cy}`, drawables: [lineSegment(id, { x: a.cx, y: a.cy }, { x: b.cx, y: b.cy })] }
   }, [s, t, id])
 
   if (!geo) return null

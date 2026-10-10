@@ -1,13 +1,13 @@
-import { EdgeLabelRenderer, getBezierPath, useInternalNode, type EdgeProps } from '@xyflow/react'
+import { EdgeLabelRenderer, useInternalNode, type EdgeProps } from '@xyflow/react'
 import { memo, useCallback, useMemo } from 'react'
 import { useNarrow } from '../useNarrow.ts'
 import { useStore } from '../store.ts'
 import type { SketchFlowEdge } from './adapter.ts'
 import { useEditState } from './editState.ts'
 import { EdgeTools, LabelInput } from './EditTools.tsx'
-import { borderPoint, INTO_SIDE, nodeBox } from './geometry.ts'
+import { edgeGeometry, nodeBox } from './geometry.ts'
 import { registerInk } from './play.ts'
-import { colorVar, gen, roughOptions, seedFromId } from './rough.ts'
+import { colorVar } from './rough.ts'
 import { RoughPaths } from './RoughPaths.tsx'
 
 // Floating edge: endpoints sit on the node outlines facing each other, so nodes need no visible handles.
@@ -22,28 +22,7 @@ export const SketchEdge = memo(function SketchEdge({ id, source, target, data }:
   const { edge, hasCard, dim, ink } = data!
   const select = () => useEditState.getState().select({ kind: 'edge', id })
 
-  const geo = useMemo(() => {
-    if (!s || !t) return null
-    const sb = nodeBox(s)
-    const tb = nodeBox(t)
-    const a = borderPoint(s, { x: tb.cx, y: tb.cy })
-    const b = borderPoint(t, { x: sb.cx, y: sb.cy })
-    const [d, labelX, labelY] = getBezierPath({
-      sourceX: a.x, sourceY: a.y, sourcePosition: a.side,
-      targetX: b.x, targetY: b.y, targetPosition: b.side,
-    })
-    // Arrowhead: two strokes back from the tip, 28° either side of the arrival direction.
-    const [ux, uy] = INTO_SIDE[b.side]
-    const barb = (angle: number) => {
-      const c = Math.cos(angle)
-      const sn = Math.sin(angle)
-      return [b.x - 12 * (ux * c - uy * sn), b.y - 12 * (ux * sn + uy * c)] as const
-    }
-    const opts = roughOptions({ ...edge.style, fill: undefined, fillStyle: 'none' }, seedFromId(id))
-    const [l1, l2] = [barb(0.5), barb(-0.5)]
-    const drawables = [gen.path(d, opts), gen.line(b.x, b.y, ...l1, opts), gen.line(b.x, b.y, ...l2, opts)]
-    return { d, labelX, labelY, drawables }
-  }, [s, t, id, edge.style])
+  const geo = useMemo(() => (s && t ? edgeGeometry(nodeBox(s), nodeBox(t), id, edge.style) : null), [s, t, id, edge.style])
 
   const inkRef = useCallback((el: SVGPathElement | null) => registerInk(id, el), [id])
 
