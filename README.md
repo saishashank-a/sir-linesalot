@@ -1,4 +1,4 @@
-# Sir Lines-a-Lot
+# Sir Linesalot
 
 > *Knighting your diagrams.*
 

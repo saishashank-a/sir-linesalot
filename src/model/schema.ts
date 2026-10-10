@@ -130,7 +130,7 @@ export const LalDocumentSchema = z
     lines: z.array(line).optional(),
     meta: meta.optional(),
   })
-  .meta({ title: 'Sir Lines-a-Lot document (.lal), version 1' })
+  .meta({ title: 'Sir Linesalot document (.lal), version 1' })
 
 export type LalDocument = z.infer<typeof LalDocumentSchema>
 export type LalNode = z.infer<typeof node>

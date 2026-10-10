@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { LalDocumentSchema } from '../src/model/schema.ts'
 
 const json = {
-  $id: 'urn:sir-lines-a-lot:lal:1',
+  $id: 'urn:sir-linesalot:lal:1',
   ...z.toJSONSchema(LalDocumentSchema, { target: 'draft-2020-12' }),
 }
 
