@@ -223,6 +223,22 @@
       "style": {
         "fill": "blue"
       }
+    },
+    {
+      "id": "n_export",
+      "label": "SVG & PNG export",
+      "shape": "rectangle",
+      "style": {
+        "fill": "pink"
+      }
+    },
+    {
+      "id": "n_excal",
+      "label": "Excalidraw mapper",
+      "shape": "rectangle",
+      "style": {
+        "fill": "pink"
+      }
     }
   ],
   "edges": [
@@ -444,6 +460,30 @@
       "source": "n_cards",
       "target": "n_camera",
       "label": "opens plate"
+    },
+    {
+      "id": "e_36",
+      "source": "n_files",
+      "target": "n_export",
+      "label": "exports"
+    },
+    {
+      "id": "e_37",
+      "source": "n_files",
+      "target": "n_excal",
+      "label": "imports/exports"
+    },
+    {
+      "id": "e_38",
+      "source": "n_export",
+      "target": "n_rough",
+      "label": "same strokes"
+    },
+    {
+      "id": "e_39",
+      "source": "n_excal",
+      "target": "n_validate",
+      "label": "validates import"
     }
   ],
   "cards": [
@@ -481,7 +521,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/tree/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/samples",
+          "value": "https://github.com/saishashank-a/sir-linesalot/tree/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/samples",
           "format": "url"
         }
       ]
@@ -503,7 +543,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/App.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/App.tsx",
           "format": "url"
         }
       ]
@@ -525,7 +565,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/Toolbar.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/panels/Toolbar.tsx",
           "format": "url"
         }
       ]
@@ -547,7 +587,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/CardPanel.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/panels/CardPanel.tsx",
           "format": "url"
         }
       ]
@@ -569,7 +609,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/PathLineEditor.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/panels/PathLineEditor.tsx",
           "format": "url"
         }
       ]
@@ -591,7 +631,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/store.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/store.ts",
           "format": "url"
         }
       ]
@@ -613,7 +653,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/Canvas.tsx",
           "format": "url"
         }
       ]
@@ -635,7 +675,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/adapter.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/adapter.ts",
           "format": "url"
         }
       ]
@@ -657,7 +697,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/tree/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas",
+          "value": "https://github.com/saishashank-a/sir-linesalot/tree/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas",
           "format": "url"
         }
       ]
@@ -674,12 +714,12 @@
         },
         {
           "label": "What",
-          "value": "rough.js wrapper that draws the hand-drawn strokes.",
+          "value": "rough.js wrapper plus the shape functions the canvas and the exports both draw with.",
           "format": "markdown"
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/rough.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/rough.ts",
           "format": "url"
         }
       ]
@@ -701,7 +741,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/edit/canvasActions.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/edit/canvasActions.ts",
           "format": "url"
         }
       ]
@@ -723,7 +763,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/edit/cards.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/edit/cards.ts",
           "format": "url"
         }
       ]
@@ -745,7 +785,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/edit/pathLine.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/edit/pathLine.ts",
           "format": "url"
         }
       ]
@@ -767,7 +807,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/io/files.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/io/files.ts",
           "format": "url"
         }
       ]
@@ -789,7 +829,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/io/lal.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/io/lal.ts",
           "format": "url"
         }
       ]
@@ -811,7 +851,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/io/layout.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/io/layout.ts",
           "format": "url"
         }
       ]
@@ -833,7 +873,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/model/schema.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/model/schema.ts",
           "format": "url"
         }
       ]
@@ -855,7 +895,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/model/validate.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/model/validate.ts",
           "format": "url"
         }
       ]
@@ -877,7 +917,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/Legend.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/panels/Legend.tsx",
           "format": "url"
         }
       ]
@@ -899,7 +939,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/EditTools.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/EditTools.tsx",
           "format": "url"
         }
       ]
@@ -921,7 +961,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/editState.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/editState.ts",
           "format": "url"
         }
       ]
@@ -943,7 +983,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/play.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/play.ts",
           "format": "url"
         }
       ]
@@ -965,7 +1005,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/PlayBar.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/PlayBar.tsx",
           "format": "url"
         }
       ]
@@ -987,7 +1027,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Token.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/Token.tsx",
           "format": "url"
         }
       ]
@@ -1009,7 +1049,7 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/camera.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/camera.ts",
           "format": "url"
         }
       ]
@@ -1031,7 +1071,51 @@
         },
         {
           "label": "Source",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/Breadcrumbs.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/panels/Breadcrumbs.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_export",
+      "target": "n_export",
+      "title": "SVG & PNG export",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "File IO & Layout",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": "Pure docToSvg for the focused plate with the embedded font; SVG drawn to PNG at 2x.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/io/export.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_n_excal",
+      "target": "n_excal",
+      "title": "Excalidraw mapper",
+      "fields": [
+        {
+          "label": "Group",
+          "value": "File IO & Layout",
+          "format": "plain"
+        },
+        {
+          "label": "What",
+          "value": ".excalidraw export with customData round trip, and best-effort import with a skip report.",
+          "format": "markdown"
+        },
+        {
+          "label": "Source",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/io/excalidraw.ts",
           "format": "url"
         }
       ]
@@ -1042,7 +1126,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/App.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/App.tsx",
           "format": "url"
         }
       ]
@@ -1053,7 +1137,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/App.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/App.tsx",
           "format": "url"
         }
       ]
@@ -1064,7 +1148,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/App.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/App.tsx",
           "format": "url"
         }
       ]
@@ -1075,7 +1159,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/App.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/App.tsx",
           "format": "url"
         }
       ]
@@ -1086,7 +1170,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/FileMenu.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/panels/FileMenu.tsx",
           "format": "url"
         }
       ]
@@ -1097,7 +1181,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/Canvas.tsx",
           "format": "url"
         }
       ]
@@ -1108,7 +1192,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/Canvas.tsx",
           "format": "url"
         }
       ]
@@ -1119,7 +1203,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/Canvas.tsx",
           "format": "url"
         }
       ]
@@ -1130,7 +1214,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/SketchNode.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/SketchNode.tsx",
           "format": "url"
         }
       ]
@@ -1141,7 +1225,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/adapter.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/adapter.ts",
           "format": "url"
         }
       ]
@@ -1152,7 +1236,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/CardPanel.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/panels/CardPanel.tsx",
           "format": "url"
         }
       ]
@@ -1163,7 +1247,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/PathLineEditor.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/panels/PathLineEditor.tsx",
           "format": "url"
         }
       ]
@@ -1174,7 +1258,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/CardPanel.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/panels/CardPanel.tsx",
           "format": "url"
         }
       ]
@@ -1185,7 +1269,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/Canvas.tsx",
           "format": "url"
         }
       ]
@@ -1196,7 +1280,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/io/files.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/io/files.ts",
           "format": "url"
         }
       ]
@@ -1207,7 +1291,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/io/files.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/io/files.ts",
           "format": "url"
         }
       ]
@@ -1218,7 +1302,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/store.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/store.ts",
           "format": "url"
         }
       ]
@@ -1229,7 +1313,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/io/lal.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/io/lal.ts",
           "format": "url"
         }
       ]
@@ -1240,7 +1324,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/model/validate.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/model/validate.ts",
           "format": "url"
         }
       ]
@@ -1251,7 +1335,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/App.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/App.tsx",
           "format": "url"
         }
       ]
@@ -1262,7 +1346,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/Legend.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/panels/Legend.tsx",
           "format": "url"
         }
       ]
@@ -1273,7 +1357,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/Canvas.tsx",
           "format": "url"
         }
       ]
@@ -1284,7 +1368,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/Canvas.tsx",
           "format": "url"
         }
       ]
@@ -1295,7 +1379,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/EditTools.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/EditTools.tsx",
           "format": "url"
         }
       ]
@@ -1306,7 +1390,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/editState.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/editState.ts",
           "format": "url"
         }
       ]
@@ -1317,7 +1401,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/Canvas.tsx",
           "format": "url"
         }
       ]
@@ -1328,7 +1412,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/Canvas.tsx",
           "format": "url"
         }
       ]
@@ -1339,7 +1423,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/Canvas.tsx",
           "format": "url"
         }
       ]
@@ -1350,7 +1434,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/PlayBar.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/PlayBar.tsx",
           "format": "url"
         }
       ]
@@ -1361,7 +1445,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Token.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/Token.tsx",
           "format": "url"
         }
       ]
@@ -1372,7 +1456,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/play.ts",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/play.ts",
           "format": "url"
         }
       ]
@@ -1383,7 +1467,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/canvas/Canvas.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/canvas/Canvas.tsx",
           "format": "url"
         }
       ]
@@ -1394,7 +1478,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/App.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/App.tsx",
           "format": "url"
         }
       ]
@@ -1405,7 +1489,7 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/Breadcrumbs.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/panels/Breadcrumbs.tsx",
           "format": "url"
         }
       ]
@@ -1416,7 +1500,51 @@
       "fields": [
         {
           "label": "Evidence",
-          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7/src/panels/CardPanel.tsx",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/panels/CardPanel.tsx",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_36",
+      "target": "e_36",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/io/files.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_37",
+      "target": "e_37",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/io/files.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_38",
+      "target": "e_38",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/io/export.ts",
+          "format": "url"
+        }
+      ]
+    },
+    {
+      "id": "c_e_39",
+      "target": "e_39",
+      "fields": [
+        {
+          "label": "Evidence",
+          "value": "https://github.com/saishashank-a/sir-linesalot/blob/7a5aeedf6908334c26f4d5d2bf23d15448ee4858/src/io/excalidraw.ts",
           "format": "url"
         }
       ]
@@ -1424,6 +1552,6 @@
   ],
   "meta": {
     "generator": "scripts/repo-diagram.ts",
-    "commit": "7eac6b9d1e5bd4901f6d0ead1445fb355b8895a7"
+    "commit": "7a5aeedf6908334c26f4d5d2bf23d15448ee4858"
   }
 }
