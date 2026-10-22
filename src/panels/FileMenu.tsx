@@ -3,12 +3,14 @@ import sample from '../../samples/request-flows.lal?raw'
 import { confirmDiscard, copyShareLink, exportAs, openFile, openFromFile, save, saveAs } from '../io/files.ts'
 import { useStore } from '../store.ts'
 import './FileMenu.css'
+import GitHubDialog from './GitHubDialog.tsx'
 
 const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform)
 const mod = isMac ? '⌘' : 'Ctrl+'
 
 export function FileMenu() {
   const [open, setOpen] = useState(false)
+  const [github, setGithub] = useState(false)
   const input = useRef<HTMLInputElement>(null)
   const trigger = useRef<HTMLButtonElement>(null)
   const menu = useRef<HTMLDivElement>(null)
@@ -97,6 +99,9 @@ export function FileMenu() {
           <button type="button" role="menuitem" onClick={() => run(() => confirmDiscard() && useStore.getState().loadText(sample))}>
             Load sample
           </button>
+          <button type="button" role="menuitem" onClick={() => run(() => setGithub(true))}>
+            From GitHub…
+          </button>
           <hr role="separator" />
           <button type="button" role="menuitem" onClick={() => run(copyShareLink)}>
             Copy share link
@@ -123,6 +128,7 @@ export function FileMenu() {
           if (f) await openFromFile(f) // discard was already confirmed before the picker opened
         }}
       />
+      {github && <GitHubDialog onClose={() => setGithub(false)} />}
     </div>
   )
 }

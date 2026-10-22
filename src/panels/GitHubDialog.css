@@ -1,0 +1,22 @@
+.gh-dialog {
+  width: min(640px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 16px 20px;
+  color: var(--c-ink); background: var(--c-surface);
+  border: 1.5px solid var(--c-ink); border-radius: 14px 10px 16px 12px / 12px 16px 10px 14px;
+}
+.gh-dialog::backdrop { background: rgb(0 0 0 / 0.35); }
+.gh-head { display: flex; justify-content: space-between; align-items: center; }
+.gh-head h2 { margin: 0; font-size: 22px; }
+.gh-dialog label { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; }
+.gh-dialog input, .gh-dialog textarea {
+  font: inherit; color: inherit; background: var(--c-paper); padding: 10px;
+  border: 1.5px solid var(--c-ink); border-radius: 8px; min-height: 44px;
+}
+.gh-dialog button { min-height: 44px; min-width: 44px; padding: 0 16px; font: inherit; color: inherit; background: var(--c-surface); border: 1.5px solid var(--c-ink); border-radius: 10px; cursor: pointer; }
+.gh-dialog button:disabled { opacity: 0.5; cursor: default; }
+.gh-dialog .gh-primary { color: var(--c-surface); background: var(--c-ink); }
+.gh-actions { display: flex; gap: 8px; justify-content: flex-end; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+.gh-actions .gh-hint { margin-right: auto; }
+.gh-hint { color: var(--c-muted); font-size: 14px; margin: 8px 0 0; }
+.gh-status { min-height: 1.4em; margin: 8px 0 0; }
+.gh-error { color: var(--c-red); margin: 4px 0 0; }
+.gh-digest textarea { width: 100%; box-sizing: border-box; height: 40dvh; resize: vertical; font-family: ui-monospace, monospace; font-size: 13px; margin-top: 8px; }
