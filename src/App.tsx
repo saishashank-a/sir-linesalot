@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import sample from '../samples/request-flows.lal?raw'
 import { Canvas } from './canvas/Canvas.tsx'
 import { openDropped } from './io/files.ts'
+import { lalFromHash } from './io/lal.ts'
 import { CardPanel } from './panels/CardPanel.tsx'
 import { Breadcrumbs } from './panels/Breadcrumbs.tsx'
 import { Legend } from './panels/Legend.tsx'
@@ -22,7 +23,14 @@ export default function App() {
   const { loadText, clearIssues } = useStore.getState()
 
   useEffect(() => {
-    if (!useStore.getState().doc) loadText(sample)
+    if (useStore.getState().doc) return
+    lalFromHash(location.hash).then(
+      (text) => loadText(text ?? sample),
+      async (e: Error) => {
+        await loadText(sample)
+        useStore.setState({ issues: [{ path: '', message: e.message }], issuesTitle: "Couldn't open that link" })
+      },
+    )
   }, [loadText])
 
   // Undo/redo shortcuts in Edit mode. Text fields keep their own native undo.

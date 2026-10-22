@@ -1,0 +1,11 @@
+{
+  "name": "sir-linesalot",
+  "displayName": "Sir Linesalot",
+  "version": "0.1.0",
+  "description": "Turn any repo into a hand-drawn, clickable architecture diagram with evidence on every edge, plus local repo digest, explain and reverse-prompt skills.",
+  "author": { "name": "Sai Shashank Anchuri", "url": "https://github.com/saishashank-a" },
+  "homepage": "https://sir-linesalot.vercel.app/",
+  "repository": "https://github.com/saishashank-a/sir-linesalot",
+  "license": "MIT",
+  "keywords": ["diagram", "architecture", "visualization", "onboarding", "codebase"]
+}

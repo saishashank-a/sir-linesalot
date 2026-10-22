@@ -42,3 +42,5 @@ pnpm-debug.log*
 
 # Generated knowledge graph
 graphify-out/
+.vercel
+.env*

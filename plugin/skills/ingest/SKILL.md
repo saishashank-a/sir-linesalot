@@ -8,7 +8,7 @@ description: Local gitingest/uithub. Dump a repo (summary, directory tree, file 
 Run from the root of the repo you want digested (any git repo; the script path can be absolute):
 
 ```bash
-node scripts/ingest.ts [flags] > digest.txt
+node "${CLAUDE_PLUGIN_ROOT}/scripts/ingest.mjs" [flags] > digest.txt
 ```
 
 | Flag | Effect |
