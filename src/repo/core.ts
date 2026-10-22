@@ -1,6 +1,5 @@
 // Repo -> digest / index / diagram, with no git or fs: callers hand in the file list
-// and a reader. scripts/ingest.ts and scripts/repo-diagram.ts feed it `git ls-files`;
-// the web app (src/repo/github.ts) feeds it a GitHub tree.
+// and a reader. scripts/ingest.ts and scripts/repo-diagram.ts feed it `git ls-files`.
 import { z } from 'zod'
 import type { LalCard, LalDocument, LalEdge, LalNode } from '../model/schema.ts'
 import { parseLal } from '../model/validate.ts'
@@ -62,7 +61,7 @@ export async function digest(repo: { name: string; branch: string }, all: RepoFi
   const skipped: string[] = []
   if (!o.treeOnly) {
     for (const f of [...files].sort((a, b) => a.size - b.size)) {
-      // Bytes >= chars, so this only skips files that can't fit; it saves a fetch per file on the web.
+      // Bytes >= chars, so this only skips files that can't fit, without reading them.
       if (used + Math.ceil(Math.min(f.size, MAX_FILE) / 4) > budget) {
         skipped.push(f.path)
         continue
@@ -123,7 +122,7 @@ export async function repoIndex(files: RepoFile[], read: Read): Promise<{ core: 
 
 // ---- graph.json -> .lal ----
 
-// What the model writes (the skill's graph.json, the web app's structured output).
+// What the model writes: the skill's graph.json.
 export const GraphSchema = z.object({
   title: z.string(),
   groups: z.array(z.object({ id: z.string(), label: z.string() })),

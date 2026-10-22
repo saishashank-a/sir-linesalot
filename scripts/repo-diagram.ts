@@ -57,5 +57,6 @@ if (!doc) {
 const text = JSON.stringify(doc, null, 2) + '\n'
 writeFileSync(output, text)
 console.log(`wrote ${output}: ${doc.nodes.length} nodes, ${doc.edges.length} edges (${doc.edges.filter((e) => e.style?.dashed).length} unverified)`)
-// The whole diagram rides in the hash (src/io/lal.ts lalFromHash), so the link opens it with no upload.
-console.log(`open: ${viewer}#lal=${deflateRawSync(text, { level: 9 }).toString('base64url')}`)
+// For sharing: the whole diagram rides in the hash (src/io/lal.ts lalFromHash), so even this hosted link uploads nothing.
+// Opening it locally is serve.ts's job.
+console.log(`share link: ${viewer}#lal=${deflateRawSync(text, { level: 9 }).toString('base64url')}`)

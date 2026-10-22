@@ -18,6 +18,7 @@
     ".claude/**",
     "dist/**",
     "plugin/scripts/**",
-    "api/_lib/**"
+    "api/_lib/**",
+    "plugin/viewer/**"
   ]
 }

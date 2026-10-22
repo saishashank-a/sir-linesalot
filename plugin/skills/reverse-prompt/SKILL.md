@@ -1,9 +1,19 @@
 ---
 name: reverse-prompt
-description: Local gitreverse. Reverse-engineer a repo into the one plain-language prompt someone could have pasted into an AI coding tool to build it. Use when asked to "reverse" a repo, for "gitreverse", or for a rebuild-this-project prompt.
+description: Local gitreverse. Reverse-engineer a repo (this one, or any GitHub repo by URL) into the one plain-language prompt someone could have pasted into an AI coding tool to build it. Use when asked to "reverse" a repo, for "gitreverse", or for a rebuild-this-project prompt.
 ---
 
 # /reverse-prompt
+
+## 0. Which repo
+
+The current repo by default. If the user gives a GitHub repo (`owner/repo` or a URL), clone it and run every command from the clone:
+
+```bash
+git clone --depth 1 https://github.com/<owner>/<repo>.git "<scratchpad>/<repo>"
+```
+
+Clone into the scratchpad, never inside the user's project. Private repos work if the user's own git can already read them. Reuse an existing clone of the same repo in this session instead of cloning again.
 
 1. Context: `node "${CLAUDE_PLUGIN_ROOT}/scripts/ingest.mjs" --tree-only`, the README, `package.json` (or equivalent) description and dependencies, and a skim of the entry point. More than gitreverse's depth-1 tree, still no full dump.
 2. Write ONE synthetic user message, the kind a non-technical or lightly technical person pastes into Claude Code or Cursor to get this built in one go.
