@@ -20,6 +20,15 @@ export async function lalFromHash(hash: string): Promise<string | null> {
   return new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text()
 }
 
+// A short link, `#s=<id>`, for diagrams too big for the hash; api/share.ts stores them.
+export async function lalFromShare(hash: string): Promise<string | null> {
+  const m = hash.match(/^#s=([\w-]{12})$/)
+  if (!m) return null
+  const res = await fetch(`/api/share?id=${m[1]}`)
+  if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? `server said ${res.status}`)
+  return res.text()
+}
+
 // Writes exactly what the document holds (including layout-produced positions).
 // Keys come out in schema order (zod rebuilds objects in shape order; `meta`
 // contents keep theirs), so a file reads the same however it was produced and

@@ -47,3 +47,5 @@ Exit 1 prints every issue (undeclared node, untracked path, missing evidence fil
 ## 4. Hand off
 
 Report node/edge/unverified counts, the path, and the `open:` link the build prints (give it whole; it carries the diagram). The link opens it in Sir Linesalot; the file also opens there via File → Open: groups are colours, each node's card has a summary and a commit-pinned source link, evidenced edges carry an Evidence card.
+
+If the `open:` link is over ~8,000 characters (some chats and terminals cut long links), offer a short link: `node SCRIPT share <out>.lal` prints `short link: …`. It uploads the diagram to the Sir Linesalot server, so ask first and never run it on a private repo without a yes.

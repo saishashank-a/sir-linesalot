@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import sample from '../../samples/request-flows.lal?raw'
-import { confirmDiscard, exportAs, openFile, openFromFile, save, saveAs } from '../io/files.ts'
+import { confirmDiscard, copyShareLink, exportAs, openFile, openFromFile, save, saveAs } from '../io/files.ts'
 import { useStore } from '../store.ts'
 import './FileMenu.css'
 
@@ -98,6 +98,9 @@ export function FileMenu() {
             Load sample
           </button>
           <hr role="separator" />
+          <button type="button" role="menuitem" onClick={() => run(copyShareLink)}>
+            Copy share link
+          </button>
           <button type="button" role="menuitem" onClick={() => run(() => exportAs('svg'))}>
             Export SVG
           </button>

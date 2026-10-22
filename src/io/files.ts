@@ -5,7 +5,7 @@ import { focusedPlate } from '../canvas/camera.ts'
 import { useStore } from '../store.ts'
 import { docToExcalidraw, excalidrawToDoc } from './excalidraw.ts'
 import { docToSvg, excalifontDataUrl, svgToPng, themeColors } from './export.ts'
-import { lalFromHash, serializeLal } from './lal.ts'
+import { lalFromHash, lalFromShare, serializeLal } from './lal.ts'
 
 // Only the picker functions are missing from TS's DOM lib; handles and writables are typed.
 type PickerType = { description: string; accept: Record<string, string[]> }
@@ -73,11 +73,28 @@ async function load(text: string, fileName: string, fileHandle?: FileSystemFileH
 export async function openHash(fallback?: string) {
   const { loadText } = useStore.getState()
   try {
-    const text = (await lalFromHash(location.hash)) ?? fallback
+    const text = (await lalFromHash(location.hash)) ?? (await lalFromShare(location.hash)) ?? fallback
     if (text) await loadText(text)
   } catch (e) {
     if (fallback) await loadText(fallback)
     useStore.setState({ issues: [{ path: '', message: (e as Error).message }], issuesTitle: "Couldn't open that link" })
+  }
+}
+
+// Uploads the current diagram and copies a short link. Only ever on an explicit click:
+// unlike #lal= links, this sends the diagram to our server.
+export async function copyShareLink() {
+  const { doc } = useStore.getState()
+  if (!doc) return
+  try {
+    const res = await fetch('/api/share', { method: 'POST', body: serializeLal(doc) })
+    const body = await res.json()
+    if (!res.ok) throw new Error(body.error ?? `server said ${res.status}`)
+    const url = `${location.origin}/#s=${body.id}`
+    await navigator.clipboard.writeText(url)
+    history.replaceState(null, '', `#s=${body.id}`) // the address bar now shows what was copied
+  } catch (e) {
+    report("Couldn't make a share link", e)
   }
 }
 

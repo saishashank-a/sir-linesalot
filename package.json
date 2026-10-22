@@ -11,10 +11,11 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "licenses": "node scripts/gen-licenses.ts",
-    "plugin": "rolldown scripts/repo-diagram.ts scripts/ingest.ts --platform node --format esm --minify -d plugin/scripts --entry-file-names '[name].mjs'"
+    "plugin": "rolldown scripts/repo-diagram.ts scripts/ingest.ts --platform node --format esm --minify -d plugin/scripts --entry-file-names '[name].mjs' && rolldown src/model/validate.ts --platform node --format esm --minify -o api/_lib/validate.mjs"
   },
   "dependencies": {
     "@dagrejs/dagre": "^3.1.1",
+    "@vercel/blob": "^2.8.2",
     "@xyflow/react": "^12.12.0",
     "motion": "^14.1.0",
     "react": "^19.2.8",
