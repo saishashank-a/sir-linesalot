@@ -17,6 +17,7 @@
   "ignorePatterns": [
     ".claude/**",
     "dist/**",
-    "plugin/scripts/**"
+    "plugin/scripts/**",
+    "api/_lib/**"
   ]
 }

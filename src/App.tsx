@@ -25,7 +25,7 @@ export default function App() {
     if (!useStore.getState().doc) openHash(sample)
     // A new #lal= link pasted into an open tab changes only the hash, so there's no reload to catch it.
     const onHash = () => {
-      if (location.hash.startsWith('#lal=') && confirmDiscard()) openHash()
+      if (/^#(lal|s)=/.test(location.hash) && confirmDiscard()) openHash()
     }
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
