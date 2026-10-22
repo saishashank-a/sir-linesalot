@@ -11,6 +11,15 @@ export function readLal(text: string): { doc?: LalDocument; issues: Issue[] } {
   return parseLal(json)
 }
 
+// A whole .lal carried in a link: `#lal=<base64url of deflate-raw(json)>`. Lives in the
+// hash so it never reaches a server; scripts/repo-diagram.ts writes the other half.
+export async function lalFromHash(hash: string): Promise<string | null> {
+  const m = hash.match(/^#lal=([\w-]+)/)
+  if (!m) return null
+  const bytes = Uint8Array.from(atob(m[1].replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0))
+  return new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text()
+}
+
 // Writes exactly what the document holds (including layout-produced positions).
 // Keys come out in schema order (zod rebuilds objects in shape order; `meta`
 // contents keep theirs), so a file reads the same however it was produced and

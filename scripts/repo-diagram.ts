@@ -10,6 +10,7 @@
 import { execFileSync } from 'node:child_process'
 import { readFileSync, statSync, writeFileSync } from 'node:fs'
 import { dirname, join, normalize } from 'node:path'
+import { deflateRawSync } from 'node:zlib'
 import { parseLal } from '../src/model/validate.ts'
 import type { LalCard, LalDocument, LalEdge, LalNode } from '../src/model/schema.ts'
 
@@ -123,5 +124,9 @@ if (lalIssues.length) {
   console.error(lalIssues.map((x) => `${x.path}: ${x.message}`).join('\n'))
   process.exit(1)
 }
-writeFileSync(output, JSON.stringify(doc, null, 2) + '\n')
+const text = JSON.stringify(doc, null, 2) + '\n'
+writeFileSync(output, text)
 console.log(`wrote ${output}: ${nodes.length} nodes, ${edges.length} edges (${edges.filter((e) => e.style?.dashed).length} unverified)`)
+// The whole diagram rides in the hash (src/io/lal.ts lalFromHash), so the link opens it with no upload.
+const viewer = process.env.LINESALOT_URL ?? 'https://sir-linesalot.vercel.app/'
+console.log(`open: ${viewer}#lal=${deflateRawSync(text, { level: 9 }).toString('base64url')}`)

@@ -5,7 +5,7 @@ description: Local explaingithub. Beginner-friendly explanation of an unfamiliar
 
 # /explain-repo
 
-1. Context: `node scripts/ingest.ts --tree-only`, README, manifest, `node scripts/repo-diagram.ts index` for the core modules, and read the entry point plus the top 3-5 core modules. If `graphify-out/GRAPH_REPORT.md` exists, use its god nodes and communities too.
+1. Context: `node "${CLAUDE_PLUGIN_ROOT}/scripts/ingest.mjs" --tree-only`, README, manifest, `node "${CLAUDE_PLUGIN_ROOT}/scripts/repo-diagram.mjs" index` for the core modules, and read the entry point plus the top 3-5 core modules. If `graphify-out/GRAPH_REPORT.md` exists, use its god nodes and communities too.
 2. Answer in this shape, plain language, no jargon without a one-line gloss:
    - **What it is**: two sentences.
    - **How it works**: the main flow from entry point to output, 4-7 steps, each naming its file as `path:line`.

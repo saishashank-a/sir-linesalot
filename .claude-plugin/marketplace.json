@@ -1,0 +1,12 @@
+{
+  "name": "sir-linesalot",
+  "owner": { "name": "Sai Shashank Anchuri" },
+  "metadata": { "description": "Sir Linesalot: hand-drawn, clickable architecture diagrams for Claude Code." },
+  "plugins": [
+    {
+      "name": "sir-linesalot",
+      "source": "./plugin",
+      "description": "Hand-drawn, clickable architecture diagrams of any repo."
+    }
+  ]
+}
