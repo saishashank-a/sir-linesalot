@@ -3,8 +3,7 @@ import { MotionConfig } from 'motion/react'
 import { useEffect } from 'react'
 import sample from '../samples/request-flows.lal?raw'
 import { Canvas } from './canvas/Canvas.tsx'
-import { openDropped } from './io/files.ts'
-import { lalFromHash } from './io/lal.ts'
+import { confirmDiscard, openDropped, openHash } from './io/files.ts'
 import { CardPanel } from './panels/CardPanel.tsx'
 import { Breadcrumbs } from './panels/Breadcrumbs.tsx'
 import { Legend } from './panels/Legend.tsx'
@@ -20,18 +19,17 @@ export default function App() {
   const issues = useStore((s) => s.issues)
   const issuesTitle = useStore((s) => s.issuesTitle)
   const mode = useStore((s) => s.mode)
-  const { loadText, clearIssues } = useStore.getState()
+  const { clearIssues } = useStore.getState()
 
   useEffect(() => {
-    if (useStore.getState().doc) return
-    lalFromHash(location.hash).then(
-      (text) => loadText(text ?? sample),
-      async (e: Error) => {
-        await loadText(sample)
-        useStore.setState({ issues: [{ path: '', message: e.message }], issuesTitle: "Couldn't open that link" })
-      },
-    )
-  }, [loadText])
+    if (!useStore.getState().doc) openHash(sample)
+    // A new #lal= link pasted into an open tab changes only the hash, so there's no reload to catch it.
+    const onHash = () => {
+      if (location.hash.startsWith('#lal=') && confirmDiscard()) openHash()
+    }
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
 
   // Undo/redo shortcuts in Edit mode. Text fields keep their own native undo.
   useEffect(() => {

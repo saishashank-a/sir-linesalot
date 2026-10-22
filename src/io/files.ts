@@ -5,7 +5,7 @@ import { focusedPlate } from '../canvas/camera.ts'
 import { useStore } from '../store.ts'
 import { docToExcalidraw, excalidrawToDoc } from './excalidraw.ts'
 import { docToSvg, excalifontDataUrl, svgToPng, themeColors } from './export.ts'
-import { serializeLal } from './lal.ts'
+import { lalFromHash, serializeLal } from './lal.ts'
 
 // Only the picker functions are missing from TS's DOM lib; handles and writables are typed.
 type PickerType = { description: string; accept: Record<string, string[]> }
@@ -67,6 +67,18 @@ async function load(text: string, fileName: string, fileHandle?: FileSystemFileH
     dirty: true,
     ...(skipped.length && { issues: skipped.map((message) => ({ path: '', message })), issuesTitle: 'Imported from Excalidraw. Skipped:' }),
   })
+}
+
+// Opens the diagram carried in a #lal= link; `fallback` loads when there's none (or it's broken).
+export async function openHash(fallback?: string) {
+  const { loadText } = useStore.getState()
+  try {
+    const text = (await lalFromHash(location.hash)) ?? fallback
+    if (text) await loadText(text)
+  } catch (e) {
+    if (fallback) await loadText(fallback)
+    useStore.setState({ issues: [{ path: '', message: (e as Error).message }], issuesTitle: "Couldn't open that link" })
+  }
 }
 
 // Drag-drop. Chromium can hand over a writable handle, so Save writes back to the
