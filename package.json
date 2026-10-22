@@ -11,7 +11,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "licenses": "node scripts/gen-licenses.ts",
-    "plugin": "rolldown scripts/repo-diagram.ts scripts/ingest.ts --platform node --format esm --minify -d plugin/scripts --entry-file-names '[name].mjs' && rolldown src/model/validate.ts --platform node --format esm --minify -o api/_lib/validate.mjs"
+    "plugin": "vite build --outDir plugin/viewer --emptyOutDir && rm -rf plugin/scripts && for f in repo-diagram ingest serve; do rolldown scripts/$f.ts --platform node --format esm --minify -o plugin/scripts/$f.mjs || exit 1; done && rolldown src/model/validate.ts --platform node --format esm --minify -o api/_lib/validate.mjs"
   },
   "dependencies": {
     "@dagrejs/dagre": "^3.1.1",
