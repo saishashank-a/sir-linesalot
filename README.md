@@ -55,6 +55,12 @@ All planned milestones, (a) to (f), are done:
 - **(e)** plates and camera fly-to
 - **(f)** SVG, PNG and `.excalidraw` export, and `.excalidraw` import (File → Open)
 
+Since then:
+
+- Claude Code plugin with four skills that work on the current repo or any GitHub repo
+- Diagrams open in a viewer served on `127.0.0.1`, so nothing leaves your machine
+- Share links that carry the whole diagram in the URL, plus opt-in short links (File → Copy share link) for big diagrams
+
 See [PLAN.md](PLAN.md) for the full plan.
 
 ## License
