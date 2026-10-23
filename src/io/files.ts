@@ -89,6 +89,7 @@ export async function copyShareLink() {
   try {
     const res = await fetch('/api/share', { method: 'POST', body: serializeLal(doc) })
     if (res.status === 404) throw new Error('Short links only work on sir-linesalot.vercel.app; this copy runs on your machine.')
+    if (res.status === 429) throw new Error('Too many short links at once; try again in a minute.')
     const body = await res.json()
     if (!res.ok) throw new Error(body.error ?? `server said ${res.status}`)
     const url = `${location.origin}/#s=${body.id}`

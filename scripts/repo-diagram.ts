@@ -28,7 +28,7 @@ const viewer = process.env.LINESALOT_URL ?? 'https://sir-linesalot.vercel.app/'
 // this sends the diagram to the server, so the skill asks before running it.
 if (cmd === 'share' && input) {
   const res = await fetch(new URL('api/share', viewer), { method: 'POST', body: readFileSync(input, 'utf8') })
-  const body = await res.json().catch(() => ({ error: `server said ${res.status}` }))
+  const body = await res.json().catch(() => ({ error: res.status === 429 ? 'rate limited (10 uploads a minute); try again shortly' : `server said ${res.status}` }))
   if (!res.ok) {
     console.error(`share failed: ${body.error}`)
     process.exit(1)
