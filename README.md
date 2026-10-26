@@ -6,13 +6,7 @@ An interactive, hand-drawn style diagram canvas: sketchy nodes you can tap to op
 
 Open it at **https://sir-linesalot.vercel.app/**.
 
-## Claude Code plugin
-
-```
-/plugin install sir-linesalot --marketplace saishashank-a/sir-linesalot
-```
-
-Or from a terminal:
+## Install
 
 ```
 claude plugin marketplace add saishashank-a/sir-linesalot
