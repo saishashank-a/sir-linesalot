@@ -22,7 +22,7 @@ Restart Claude Code after installing.
 
 ## Privacy
 
-Diagrams open in a viewer this plugin serves on `127.0.0.1`, and the diagram travels in the link's `#` part, so it never leaves your machine. The server stops by itself once the page is idle. A short share link uploads the diagram to the Sir Linesalot server, so the skill asks before making one.
+Diagrams open in a viewer this plugin serves on `127.0.0.1`, and the diagram travels in the link's `#` part, so it never leaves your machine. The server stops by itself once the page is idle. A short share link uploads the diagram to the Sir Linesalot server, so the skill asks before making one. Uploaded diagrams are stored privately (Vercel Blob) under an unguessable ID, can be opened by anyone who has the link, and are kept with no expiry. To have one removed, open an issue at https://github.com/saishashank-a/sir-linesalot/issues with its link. Nothing else is uploaded, and there is no telemetry.
 
 ## Source and license
 

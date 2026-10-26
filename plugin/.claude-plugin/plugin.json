@@ -7,5 +7,6 @@
   "homepage": "https://sir-linesalot.vercel.app/",
   "repository": "https://github.com/saishashank-a/sir-linesalot",
   "license": "MIT",
+  "privacyPolicyUrl": "https://github.com/saishashank-a/sir-linesalot/blob/main/plugin/README.md#privacy",
   "keywords": ["diagram", "architecture", "visualization", "onboarding", "codebase"]
 }
