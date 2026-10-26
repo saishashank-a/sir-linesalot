@@ -4,13 +4,13 @@ rules:
     path: package.json
     message: "*rm -*"
     reason: >-
-      `rm -rf plugin/scripts` in the `plugin` npm script clears a build output
-      dir before rolldown rewrites it. Maintainer-only dev tooling; never runs
+      The `plugin` npm script deletes the plugin/scripts build output dir
+      before rolldown rewrites it. Maintainer-only dev tooling; never runs
       when the skill is installed or used.
   - id: TM2
     path: package.json
     message: "*rm -*"
     reason: >-
-      Same `plugin` build script: `&& rm -rf plugin/scripts` chains a clean of
-      the build output dir. Maintainer-only dev tooling; never runs when the
+      Same `plugin` build script: the delete of plugin/scripts is chained
+      after the vite build. Maintainer-only dev tooling; never runs when the
       skill is installed or used.
