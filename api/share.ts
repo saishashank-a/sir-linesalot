@@ -6,8 +6,9 @@ import { get, put } from '@vercel/blob'
 import { parseLal } from './_lib/validate.mjs'
 
 const MAX_BYTES = 2_000_000
-// ponytail: no rate limit or auth; anyone can upload a valid .lal. Add per-IP limits
-// (or tie uploads to accounts) once short links are a paid feature.
+// Uploads are rate limited by the Vercel firewall rule "Short link uploads" (10 POSTs a minute
+// per IP, 429 past that), not in code. ponytail: no auth; tie uploads to accounts once short
+// links are a paid feature.
 
 const pathOf = (id: string) => `s/${id}.lal`
 const json = (body: object, status: number) => Response.json(body, { status })
