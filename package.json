@@ -22,7 +22,7 @@
     "react-dom": "^19.2.8",
     "react-markdown": "^10.1.0",
     "roughjs": "^4.6.6",
-    "zod": "^4.6.5",
+    "zod": "^4.6.7",
     "zustand": "^5.0.15"
   },
   "devDependencies": {
@@ -35,5 +35,8 @@
     "typescript": "~6.0.2",
     "vite": "^8.3.0",
     "vitest": "^5.0.3"
+  },
+  "overrides": {
+    "zod": "$zod"
   }
 }
