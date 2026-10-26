@@ -11,30 +11,30 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "licenses": "node scripts/gen-licenses.ts",
-    "plugin": "vite build --outDir plugin/viewer --emptyOutDir && rm -rf plugin/scripts && for f in repo-diagram ingest serve; do rolldown scripts/$f.ts --platform node --format esm --minify -o plugin/scripts/$f.mjs || exit 1; done && rolldown src/model/validate.ts --platform node --format esm --minify -o api/_lib/validate.mjs"
+    "plugin": "vite build --outDir plugin/viewer --emptyOutDir && node -e \"require('fs').rmSync('plugin/scripts',{recursive:true,force:true})\" && for f in repo-diagram ingest serve; do rolldown scripts/$f.ts --platform node --format esm --minify -o plugin/scripts/$f.mjs || exit 1; done && rolldown src/model/validate.ts --platform node --format esm --minify -o api/_lib/validate.mjs"
   },
   "dependencies": {
-    "@dagrejs/dagre": "^3.1.1",
-    "@vercel/blob": "^2.8.2",
-    "@xyflow/react": "^12.12.0",
-    "motion": "^14.1.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "react-markdown": "^10.1.0",
-    "roughjs": "^4.6.6",
-    "zod": "^4.6.7",
-    "zustand": "^5.0.15"
+    "@dagrejs/dagre": "3.1.1",
+    "@vercel/blob": "2.8.2",
+    "@xyflow/react": "12.12.0",
+    "motion": "14.1.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-markdown": "10.1.0",
+    "roughjs": "4.6.6",
+    "zod": "4.6.7",
+    "zustand": "5.0.15"
   },
   "devDependencies": {
-    "@types/node": "^24.13.3",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.7",
-    "@vitejs/plugin-react": "^6.1.1",
-    "ajv": "^8.20.0",
-    "oxlint": "^1.81.0",
-    "typescript": "~6.0.2",
-    "vite": "^8.3.0",
-    "vitest": "^5.0.3"
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "ajv": "8.20.0",
+    "oxlint": "1.87.0",
+    "typescript": "6.0.3",
+    "vite": "8.3.4",
+    "vitest": "5.0.3"
   },
   "overrides": {
     "zod": "$zod"
